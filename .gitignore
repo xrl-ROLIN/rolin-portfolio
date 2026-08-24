@@ -1,0 +1,27 @@
+# 默认忽略项目根目录中的调试文件和中间产物
+*
+
+# 保留 Git 配置与正式网站入口
+!.gitignore
+!index.html
+!styles.css
+!script.js
+!global-nav.css
+!work.html
+!work.css
+!work.js
+!brand-project.html
+!brand-project.css
+!brand-project.js
+!aigc-project.html
+!aigc-project.css
+!about.html
+!about.css
+
+# 保留网站使用的全部发布资源
+!assets/
+!assets/**
+
+# 始终忽略系统文件
+.DS_Store
+**/.DS_Store

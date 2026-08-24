@@ -1,0 +1,218 @@
+{
+  "scale": "6x",
+  "assets": [
+    {
+      "file": "campaign-01-hero-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/work-hd/campaign-hero.png",
+      "crop": null
+    },
+    {
+      "file": "campaign-02-object-6x.png",
+      "size": [
+        1440,
+        1800
+      ],
+      "source": "assets/work-hd/campaign-hero.png",
+      "crop": [
+        0,
+        0,
+        1447,
+        1404
+      ]
+    },
+    {
+      "file": "campaign-03-wordmark-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/work-hd/campaign-hero.png",
+      "crop": [
+        798,
+        0,
+        2496,
+        1263
+      ]
+    },
+    {
+      "file": "campaign-04-color-6x.png",
+      "size": [
+        1440,
+        1440
+      ],
+      "source": "assets/work-hd/campaign-hero.png",
+      "crop": [
+        0,
+        210,
+        1547,
+        1404
+      ]
+    },
+    {
+      "file": "illustration-01-overview-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/sisyphe.png",
+      "crop": null
+    },
+    {
+      "file": "illustration-02-story-6x.png",
+      "size": [
+        1440,
+        1800
+      ],
+      "source": "assets/figma/sisyphe.png",
+      "crop": [
+        0,
+        0,
+        2293,
+        2917
+      ]
+    },
+    {
+      "file": "illustration-03-artwork-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/sisyphe.png",
+      "crop": [
+        1925,
+        1245,
+        4096,
+        2739
+      ]
+    },
+    {
+      "file": "illustration-04-system-6x.png",
+      "size": [
+        1440,
+        1440
+      ],
+      "source": "assets/figma/sisyphe.png",
+      "crop": [
+        2007,
+        1921,
+        4096,
+        3558
+      ]
+    },
+    {
+      "file": "brand-01-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/catffee.png",
+      "crop": [
+        0,
+        0,
+        1282,
+        713
+      ]
+    },
+    {
+      "file": "brand-02-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/catffee.png",
+      "crop": [
+        0,
+        713,
+        1282,
+        1426
+      ]
+    },
+    {
+      "file": "brand-03-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/catffee.png",
+      "crop": [
+        0,
+        1426,
+        1282,
+        2139
+      ]
+    },
+    {
+      "file": "brand-04-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/catffee.png",
+      "crop": [
+        0,
+        2139,
+        1282,
+        2853
+      ]
+    },
+    {
+      "file": "aigc-01-hero-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/work-hd/three-d-aigc-hero.png",
+      "crop": null
+    },
+    {
+      "file": "aigc-02-character-6x.png",
+      "size": [
+        1440,
+        1800
+      ],
+      "source": "assets/work-hd/three-d-aigc-hero.png",
+      "crop": [
+        0,
+        0,
+        1944,
+        1886
+      ]
+    },
+    {
+      "file": "aigc-03-material-6x.png",
+      "size": [
+        1440,
+        1440
+      ],
+      "source": "assets/work-hd/three-d-aigc-hero.png",
+      "crop": [
+        1206,
+        0,
+        3352,
+        1886
+      ]
+    },
+    {
+      "file": "aigc-04-bandana-6x.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "source": "assets/figma/bandana.png",
+      "crop": null
+    },
+    {
+      "file": "hermes-scarf-6x.png",
+      "size": [
+        11520,
+        8550
+      ],
+      "source": "用户已提取：Desktop/爱马仕/web爱马仕.png",
+      "crop": null
+    }
+  ]
+}

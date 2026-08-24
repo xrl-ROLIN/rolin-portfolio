@@ -1,0 +1,79 @@
+header.global-nav {
+  position: fixed;
+  inset: 8px 0 auto;
+  z-index: 5000;
+  display: flex;
+  width: auto;
+  height: auto;
+  padding: 0 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  mix-blend-mode: difference;
+  backdrop-filter: none;
+  transform: none;
+  pointer-events: none;
+}
+
+header.global-nav nav,
+header.global-nav .global-nav__right {
+  display: flex;
+  gap: 22px;
+}
+
+header.global-nav a,
+header.global-nav button {
+  position: relative;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 160ms ease;
+}
+
+header.global-nav a:hover,
+header.global-nav button:hover,
+header.global-nav a:focus-visible,
+header.global-nav button:focus-visible {
+  color: inherit;
+  opacity: 0.5;
+  outline: none;
+}
+
+@media (max-width: 720px) {
+  header.global-nav {
+    inset: 7px 0 auto;
+    padding-inline: 8px;
+  }
+
+  header.global-nav nav,
+  header.global-nav .global-nav__right {
+    gap: 14px;
+  }
+
+  header.global-nav a,
+  header.global-nav button {
+    font-size: 8px;
+  }
+}

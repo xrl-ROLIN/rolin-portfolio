@@ -1,0 +1,239 @@
+:root {
+  --paper: #fff;
+  --ink: #111;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.project-back {
+  position: fixed;
+  z-index: 20;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 999px;
+  background: rgba(14, 14, 14, 0.88);
+  color: #fff;
+  font-size: 9px;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  transition: transform 240ms var(--ease), background-color 240ms ease;
+}
+
+.project-back:hover,
+.project-back:focus-visible {
+  background: #111;
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.project-back span:first-child {
+  font-size: 14px;
+}
+
+.project-gallery {
+  width: 100%;
+}
+
+.project-section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  scroll-margin-top: 0;
+}
+
+.project-frame {
+  display: flex;
+  width: 100%;
+  min-height: 100svh;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--paper);
+  scroll-snap-align: start;
+}
+
+.project-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+}
+
+#bingo > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  scroll-snap-align: start;
+}
+
+.project-frame:first-child img {
+  animation: image-in 900ms var(--ease) both;
+}
+
+.project-next {
+  display: flex;
+  width: max-content;
+  margin: clamp(48px, 7vw, 96px) clamp(16px, 2vw, 34px) 32px auto;
+  padding: 10px 17px 10px 22px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  border-radius: 999px;
+  background: #050505;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 220ms var(--ease), background-color 220ms ease;
+}
+
+.project-next strong {
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.project-next span,
+.project-next svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.project-next svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.project-next:hover,
+.project-next:focus-visible {
+  background: #202020;
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.project-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  visibility: hidden;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, visibility 0s 180ms;
+}
+
+.project-transition video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transform: translate3d(-100vw, 0, 0);
+  will-change: transform, opacity;
+}
+
+body.is-project-transition {
+  height: 100svh;
+  overflow: hidden;
+}
+
+body.is-project-transition .project-transition {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 180ms ease, visibility 0s;
+}
+
+body.is-project-transition .project-transition video {
+  animation: cyclist-horizontal-pass 5.4s linear forwards;
+}
+
+@keyframes cyclist-horizontal-pass {
+  0% {
+    opacity: 0;
+    transform: translate3d(-100vw, 0, 0);
+  }
+  5% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(100vw, 0, 0);
+  }
+}
+
+@keyframes image-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  html {
+    scroll-snap-type: none;
+  }
+
+  .project-frame {
+    min-height: 0;
+  }
+
+  .project-back {
+    right: 10px;
+    bottom: 10px;
+    padding: 9px 11px;
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .project-frame:first-child img {
+    animation: none;
+  }
+
+  .project-transition {
+    display: none;
+  }
+}

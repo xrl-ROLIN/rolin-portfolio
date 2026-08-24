@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brand Project / Rolin Portfolio</title>
+    <meta
+      name="description"
+      content="Brand and packaging project by Rolin."
+    />
+    <link rel="stylesheet" href="./brand-project.css?v=7" />
+    <link rel="stylesheet" href="./global-nav.css?v=2" />
+  </head>
+  <body>
+    <header class="global-nav" aria-label="Primary navigation">
+      <a href="./index.html">Back</a>
+      <nav class="global-nav__right">
+        <a href="./index.html#project">Project</a>
+        <a href="./about.html">About and Contact</a>
+      </nav>
+    </header>
+
+    <main class="project-gallery" aria-label="Project images"></main>
+
+    <a
+      class="project-next"
+      href="./work.html?category=three-d-aigc"
+      aria-label="Next section: 3D and AIGC"
+    >
+      <strong>Next Section</strong>
+      <span aria-hidden="true">
+        <svg viewBox="0 0 16 16" focusable="false">
+          <path d="M3 13L13 3M6 3h7v7"></path>
+        </svg>
+      </span>
+    </a>
+
+    <div class="project-transition" aria-hidden="true">
+      <video
+        src="./assets/transitions/3d-aigc-bike-v6.mp4?v=1"
+        muted
+        playsinline
+        preload="auto"
+      ></video>
+    </div>
+
+    <script src="./brand-project.js?v=12"></script>
+  </body>
+</html>

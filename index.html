@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Creative Portfolio</title>
+    <meta
+      name="description"
+      content="A kinetic portfolio across campaign, illustration, brand packaging, 3D and AIGC."
+    />
+    <link rel="stylesheet" href="./styles.css?v=7" />
+    <link rel="stylesheet" href="./global-nav.css?v=2" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <img
+      class="project-cursor"
+      src="./assets/ui/explore-cursor.png?v=2"
+      alt=""
+      aria-hidden="true"
+    />
+    <section class="intro" id="intro" aria-label="Opening animation">
+      <div class="intro-stage">
+        <div class="opening-frame" aria-hidden="true">
+          <div class="opening-scene scene-square">
+            <div class="opening-label">
+              <span>01 / 04</span>
+              <strong>Scroll to move</strong>
+            </div>
+            <div class="jump-shadow"></div>
+          </div>
+
+          <svg
+            class="jump-ribbon"
+            viewBox="0 0 1600 900"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path class="jump-ribbon-path" pathLength="1" />
+          </svg>
+
+          <div class="opening-scene scene-player">
+            <div class="network-copy">
+              <small>Rolin</small>
+              <strong>Pofolio<br />begin</strong>
+            </div>
+            <div class="volleyball-motion" aria-hidden="true"></div>
+          </div>
+
+          <div class="opening-scene scene-wipe"></div>
+
+          <div class="opening-scene scene-cube">
+            <div class="cube-stage">
+              <div class="cube-face cube-front"></div>
+              <div class="cube-face cube-back"></div>
+              <div class="cube-face cube-right"></div>
+              <div class="cube-face cube-left"></div>
+              <div class="cube-face cube-top"></div>
+              <div class="cube-face cube-bottom"></div>
+            </div>
+            <div class="cube-brand">ZPJ / Portfolio 2026</div>
+          </div>
+
+          <div class="story-square"></div>
+          <div class="intro-progress">
+            <span class="progress-number">00</span>
+            <div><i></i></div>
+            <span>Wheel to play</span>
+          </div>
+        </div>
+        <button class="enter-site" type="button">Skip</button>
+      </div>
+    </section>
+
+    <header class="site-header global-nav" aria-label="Primary navigation">
+      <button class="brand site-back" type="button" aria-label="Back to opening">Back</button>
+      <nav class="global-nav__right">
+        <a href="#project">Project</a>
+        <a href="./about.html">About and Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="directory" id="project" aria-label="Project directory">
+        <div class="directory-stage">
+          <div class="directory-contents" aria-hidden="true">Contents</div>
+
+          <div class="directory-category directory-category-left" aria-live="polite">
+            <span class="directory-category-en">Campaign</span>
+          </div>
+
+          <span class="directory-reference directory-archive">[ ] Portfolio</span>
+
+          <div class="directory-stream" aria-label="Looping project categories">
+            <a
+              class="directory-slide"
+              href="./work.html?category=campaign"
+              data-category="campaign"
+              data-category-en="Campaign"
+              data-category-cn="运营"
+              data-project-title="TikTok Community FEST '26"
+            >
+              <img
+                src="./assets/directory-hd/campaign.png"
+                alt="TikTok Community FEST '26 campaign artwork"
+                fetchpriority="high"
+              />
+            </a>
+
+            <a
+              class="directory-slide"
+              href="./work.html?category=illustration"
+              data-category="illustration"
+              data-category-en="Illustration"
+              data-category-cn="插画"
+              data-project-title="Celine Editorial Illustration"
+            >
+              <img
+                src="./assets/directory-hd/illustration.png"
+                alt="Celine editorial illustration"
+                loading="eager"
+              />
+            </a>
+
+            <a
+              class="directory-slide"
+              href="./work.html?category=brand"
+              data-category="brand"
+              data-category-en="Brand &amp; Packaging"
+              data-category-cn="品牌与包装"
+              data-project-title="BinGo Brand System"
+            >
+              <img
+                src="./assets/directory-hd/brand-packaging.png"
+                alt="BinGo brand and packaging system"
+                loading="eager"
+              />
+            </a>
+
+            <a
+              class="directory-slide"
+              href="./work.html?category=three-d-aigc"
+              data-category="three-d-aigc"
+              data-category-en="3D &amp; AIGC"
+              data-category-cn="三维与 AIGC"
+              data-project-title="Character Study"
+            >
+              <img
+                src="./assets/directory-hd/three-d-aigc.png"
+                alt="3D and AIGC character study"
+                loading="eager"
+              />
+            </a>
+          </div>
+
+          <div class="directory-category directory-category-right" aria-live="polite">
+            <span class="directory-category-cn">运营</span>
+          </div>
+
+          <button class="directory-reference directory-home" type="button">[•] Home</button>
+          <a class="directory-reference directory-projects" href="#project">[ ] Projects</a>
+        </div>
+      </section>
+
+      <section class="works section" id="selected-work" aria-label="Selected projects">
+        <article class="work" data-detail="moy">
+          <button class="work-link" type="button">
+            <span>CAMPAIGN</span>
+            <strong>Moy Leon</strong>
+            <em>Distinctive IP interactions for a live social reward loop.</em>
+          </button>
+          <img src="./assets/media/moment-toy.gif" alt="Moy collectible objects" />
+        </article>
+        <article class="work" data-detail="catffee">
+          <button class="work-link" type="button">
+            <span>BRAND & PACKAGING</span>
+            <strong>Catffee</strong>
+            <em>A pet-friendly coffee identity with a strange little mascot soul.</em>
+          </button>
+          <img src="./assets/figma/catffee.png" alt="Catffee visual identity" />
+        </article>
+        <article class="work" data-detail="sisyphe">
+          <button class="work-link" type="button">
+            <span>ILLUSTRATION</span>
+            <strong>Sisyphe</strong>
+            <em>A secret garden between the lines, built as a reading world.</em>
+          </button>
+          <img src="./assets/figma/sisyphe.png" alt="Sisyphe illustration page" />
+        </article>
+        <article class="work" data-detail="bandana">
+          <button class="work-link" type="button">
+            <span>3D & AIGC</span>
+            <strong>Bandana</strong>
+            <em>A bold textile object system with energetic color and movement.</em>
+          </button>
+          <img src="./assets/figma/bandana.png" alt="Bandana product design" />
+        </article>
+      </section>
+
+      <section class="about section" id="about">
+        <div>
+          <span class="eyebrow">About and Contact</span>
+          <h2>Designing interfaces with a pulse.</h2>
+        </div>
+        <p>
+          I create campaign visuals, illustration systems, branded objects, 3D
+          characters and AIGC-driven interaction concepts. The work is built for
+          screens that feel alive: direct, playful, precise, and memorable.
+        </p>
+        <a class="contact-link" href="mailto:hello@portfolio.work">hello@portfolio.work</a>
+      </section>
+    </main>
+
+    <script src="./assets/vendor/lottie.min.js"></script>
+    <script src="./script.js?v=12"></script>
+  </body>
+</html>
