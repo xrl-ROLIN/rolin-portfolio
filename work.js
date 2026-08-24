@@ -62,7 +62,7 @@ const categories = {
         focus: "Campaign / Key Art",
         year: "2026",
         type: "image",
-        src: "./assets/moy/08-campaign.gif?v=1",
+        src: "./assets/optimized/moy-campaign.webp?v=1",
         alt: "TikTok MOY campaign artwork",
         className: "media-figure--moy",
       },
@@ -102,7 +102,7 @@ const categories = {
         focus: "Character / Animation",
         year: "2026",
         type: "image",
-        src: "./assets/moy/11-moy-leon.gif",
+        src: "./assets/optimized/moy-leon.webp?v=1",
         alt: "Animated TikTok MOY Leon character",
         className: "media-figure--moy",
       },
@@ -132,7 +132,7 @@ const categories = {
         focus: "Motion / Digital Application",
         year: "2026",
         type: "image",
-        src: "./assets/moy/14-motion.gif",
+        src: "./assets/optimized/moy-motion.webp?v=1",
         alt: "TikTok MOY motion study",
         className: "media-figure--moy",
       },
@@ -176,7 +176,7 @@ const categories = {
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
-        src: "./assets/eoy/01-eoy-live-fest.gif?v=1",
+        src: "./assets/optimized/eoy-live-fest.webp?v=1",
         alt: "TikTok LIVE FEST 26 EOY creator video campaign",
         className: "media-figure--moy",
       },
@@ -209,7 +209,7 @@ const categories = {
         focus: "Activity Page / Motion / Interaction",
         year: "2026",
         type: "image",
-        src: "./assets/live-moment/03-activity.gif",
+        src: "./assets/optimized/live-moment-activity.webp?v=1",
         alt: "Animated LIVE MOMENT activity page",
         className: "media-figure--moy",
       },
@@ -389,7 +389,7 @@ const categories = {
         focus: "Poster / Motion / Character",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-catffee/02-posters-4-5s.gif?v=1",
+        src: "./assets/optimized/catffee-posters.webp?v=1",
         alt: "Animated Catffee poster series",
         className: "media-figure--illustration media-figure--catffee-posters",
         project: "catffee",
@@ -882,30 +882,35 @@ function createMedia(section, index) {
     media.className = "moy-video-pair";
     section.sources.forEach((source, sourceIndex) => {
       const video = document.createElement("video");
-      video.src = source;
-      video.autoplay = true;
+      video.autoplay = false;
       video.loop = true;
       video.muted = true;
       video.playsInline = true;
-      video.preload = "metadata";
+      video.preload = "none";
+      video.dataset.src = source;
       video.setAttribute("aria-label", `${section.title} ${sourceIndex + 1}`);
       media.append(video);
     });
   } else if (section.type === "video") {
     media = document.createElement("video");
-    media.src = section.src;
-    media.autoplay = true;
+    media.autoplay = false;
     media.loop = true;
     media.muted = true;
     media.playsInline = true;
-    media.preload = "metadata";
+    media.preload = index === 0 ? "metadata" : "none";
+    if (index === 0) {
+      media.src = section.src;
+    } else {
+      media.dataset.src = section.src;
+    }
     media.setAttribute("aria-label", section.title);
   } else {
     media = document.createElement("img");
     media.src = section.src;
     media.alt = section.alt;
     media.decoding = "async";
-    if (index > 0) media.loading = "lazy";
+    media.loading = index === 0 ? "eager" : "lazy";
+    media.fetchPriority = index === 0 ? "high" : "low";
   }
 
   figure.append(media);
@@ -1013,7 +1018,7 @@ function renderBrandDirectory() {
                       alt="${item.cycle === 1 ? item.alt : ""}"
                       width="${item.width}"
                       height="${item.height}"
-                      loading="eager"
+                      loading="${item.cycle === 1 && item.index === 0 ? "eager" : "lazy"}"
                       fetchpriority="${item.cycle === 1 ? "high" : "low"}"
                       decoding="async"
                     />
@@ -1528,10 +1533,37 @@ function updateAside(index, immediate = false) {
 }
 
 const figures = [...document.querySelectorAll(".media-figure")];
+const deferredVideoObserver = new IntersectionObserver(
+  (entries, currentObserver) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.querySelectorAll("video[data-src]").forEach((video) => {
+        video.src = video.dataset.src;
+        delete video.dataset.src;
+        video.load();
+      });
+      currentObserver.unobserve(entry.target);
+    });
+  },
+  {
+    root: illustrationSplit ? stream : null,
+    rootMargin: "120% 0px",
+    threshold: 0.01,
+  },
+);
+
+figures.forEach((figure) => deferredVideoObserver.observe(figure));
+
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add("is-visible");
+      const videos = entry.target.querySelectorAll("video");
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        videos.forEach((video) => video.play().catch(() => {}));
+      } else {
+        videos.forEach((video) => video.pause());
+      }
     });
   },
   {
