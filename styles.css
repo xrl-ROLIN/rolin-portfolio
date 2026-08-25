@@ -31,6 +31,7 @@ body {
 }
 
 body.intro-active {
+  height: 100vh;
   height: 100svh;
   overflow: hidden;
 }
@@ -150,6 +151,7 @@ body.bird-active {
 
 .intro-stage {
   position: relative;
+  min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
   display: grid;
@@ -192,6 +194,8 @@ dt {
   position: absolute;
   left: 50%;
   top: 50%;
+  width: max(100vw, 177.7778vh);
+  height: max(100vh, 56.25vw);
   width: max(100vw, 177.7778svh);
   height: max(100svh, 56.25vw);
   overflow: hidden;
@@ -292,6 +296,7 @@ dt {
 .network-copy {
   position: absolute;
   left: calc((100% - 100vw) / 2 + 2.1vw);
+  bottom: calc((100% - 100vh) / 2 + 5.2vh);
   bottom: calc((100% - 100svh) / 2 + 5.2svh);
   z-index: 4;
   display: grid;

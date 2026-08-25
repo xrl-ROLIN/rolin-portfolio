@@ -457,11 +457,28 @@ enterButton.addEventListener("click", () => {
   enterDirectory();
 });
 
-if (window.location.hash === "#project") {
+const isInternalProjectNavigation =
+  window.location.hash === "#project" &&
+  (() => {
+    try {
+      return new URL(document.referrer).origin === window.location.origin;
+    } catch {
+      return false;
+    }
+  })();
+
+if (isInternalProjectNavigation) {
   introTarget = 1;
   introProgress = 1;
   renderIntro(1);
   enterDirectory();
+} else if (window.location.hash === "#project") {
+  window.history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}${window.location.search}`,
+  );
+  window.scrollTo(0, 0);
 }
 
 function renderDirectoryMotion() {
