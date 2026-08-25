@@ -1305,10 +1305,9 @@ function renderAigcGallery() {
 if (categoryKey === "brand") renderBrandDirectory();
 if (categoryKey === "three-d-aigc") renderAigcGallery();
 
-if (categoryKey !== "three-d-aigc") {
+if (categoryKey !== "three-d-aigc" && categoryKey !== "brand") {
   category.sections.forEach((section, index) => {
     const figure = createMedia(section, index);
-    if (categoryKey === "brand" && index === 0) figure.id = "brand-cases";
     stream.append(figure);
   });
 }
