@@ -2,7 +2,7 @@ const playground = document.querySelector(".contact-playground");
 const canvas = playground?.querySelector(".contact-playground__canvas");
 
 if (playground && canvas) {
-  const context = canvas.getContext("2d", { alpha: false });
+  const context = canvas.getContext("2d", { alpha: true });
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const pointer = {
     x: 0,
@@ -29,29 +29,41 @@ if (playground && canvas) {
   }
 
   function buildParticles() {
-    const gap = width < 700 ? 16 : 19;
-    const columns = Math.ceil(width / gap) + 6;
-    const rows = Math.ceil(height / gap) + 8;
+    const gap = width < 700 ? 12 : 15;
+    const columns = Math.ceil(width / gap) + 8;
+    const rows = Math.ceil(height / gap) + 10;
     const nextParticles = [];
 
-    for (let row = -4; row < rows; row += 1) {
-      for (let column = -3; column < columns; column += 1) {
+    for (let row = -5; row < rows; row += 1) {
+      for (let column = -4; column < columns; column += 1) {
         const seed = row * 4099 + column * 131;
         const typeValue = seededRandom(seed + 1);
-        const type = typeValue < 0.48 ? "square" : typeValue < 0.75 ? "circle" : "cross";
+        const type = typeValue < 0.46 ? "square" : typeValue < 0.73 ? "circle" : "cross";
+        const homeX = column * gap + (seededRandom(seed + 2) - 0.5) * gap * 0.82;
+        const homeY = row * gap + (seededRandom(seed + 3) - 0.5) * gap * 0.82;
+        const surface =
+          height * 0.36 +
+          Math.sin(homeX * 0.0052) * height * 0.095 +
+          Math.sin(homeX * 0.012 + 1.7) * height * 0.045;
 
+        if (homeY < surface) continue;
         nextParticles.push({
-          baseX: column * gap + (seededRandom(seed + 2) - 0.5) * gap * 0.72,
-          baseY: row * gap + (seededRandom(seed + 3) - 0.5) * gap * 0.72,
+          homeX,
+          homeY,
+          x: homeX,
+          y: homeY,
+          velocityX: 0,
+          velocityY: 0,
           phase: seededRandom(seed + 4) * Math.PI * 2,
-          drift: 0.55 + seededRandom(seed + 5) * 0.8,
-          scatter: seededRandom(seed + 6),
+          drift: 0.5 + seededRandom(seed + 5) * 0.65,
           type,
           size:
             type === "square"
-              ? 6.4 + seededRandom(seed + 7) * 4.6
-              : 3.2 + seededRandom(seed + 7) * 2.6,
+              ? 5.8 + seededRandom(seed + 7) * 3
+              : 3.4 + seededRandom(seed + 7) * 1.9,
           rotation: seededRandom(seed + 8) * Math.PI,
+          spin: (seededRandom(seed + 9) - 0.5) * 0.012,
+          opacity: 0.78 + seededRandom(seed + 10) * 0.22,
         });
       }
     }
@@ -104,59 +116,61 @@ if (playground && canvas) {
     context.restore();
   }
 
-  function draw(time) {
+  function draw(time, delta = 16.67) {
     const seconds = reducedMotion ? 0 : time * 0.001;
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    context.fillStyle = "#2722f4";
-    context.fillRect(0, 0, width, height);
+    context.clearRect(0, 0, width, height);
     context.fillStyle = "#ffffff";
 
-    pointer.x += (pointer.targetX - pointer.x) * 0.13;
-    pointer.y += (pointer.targetY - pointer.y) * 0.13;
-    pointer.velocityX *= 0.88;
-    pointer.velocityY *= 0.88;
-    const targetRadius = pointer.active && !reducedMotion ? Math.min(width, height) * 0.19 : 0;
-    pointer.radius += (targetRadius - pointer.radius) * 0.09;
+    pointer.x += (pointer.targetX - pointer.x) * 0.22;
+    pointer.y += (pointer.targetY - pointer.y) * 0.22;
+    const targetRadius =
+      pointer.active && !reducedMotion
+        ? width < 700
+          ? Math.min(105, width * 0.34)
+          : Math.min(165, width * 0.11)
+        : 0;
+    pointer.radius += (targetRadius - pointer.radius) * 0.16;
+    const frameScale = Math.min(1.8, delta / 16.67);
 
     particles.forEach((particle) => {
-      const surface =
-        height * 0.3 +
-        Math.sin(particle.baseX * 0.0042 + seconds * 0.72) * height * 0.1 +
-        Math.sin(particle.baseX * 0.009 - seconds * 0.46 + particle.phase) * height * 0.052;
-      const distanceBelowSurface = particle.baseY - surface;
-      const isFloating =
-        particle.scatter > 0.958 &&
-        particle.baseY > surface - height * 0.28;
+      const wave =
+        Math.sin(particle.homeX * 0.0054 + seconds * 0.78) * 8 +
+        Math.sin(particle.homeX * 0.013 - seconds * 0.43 + particle.phase) * 3.5;
+      const targetX =
+        particle.homeX +
+        Math.sin(seconds * particle.drift + particle.phase) * 1.8;
+      const targetY = particle.homeY + wave;
 
-      if (distanceBelowSurface < 0 && !isFloating) return;
+      particle.velocityX += (targetX - particle.x) * 0.01 * frameScale;
+      particle.velocityY += (targetY - particle.y) * 0.01 * frameScale;
 
-      let x =
-        particle.baseX +
-        Math.sin(seconds * particle.drift + particle.phase) * 7 +
-        Math.sin(particle.baseY * 0.008 - seconds * 0.32) * 5;
-      let y =
-        particle.baseY +
-        Math.sin(particle.baseX * 0.007 + seconds * 0.86 + particle.phase) * 12 +
-        Math.cos(particle.baseY * 0.011 - seconds * 0.5) * 5;
-
-      if (isFloating) {
-        y -= (particle.scatter - 0.958) * height * 5.2;
-      }
-
-      const deltaX = x - pointer.x;
-      const deltaY = y - pointer.y;
+      const deltaX = particle.x - pointer.x;
+      const deltaY = particle.y - pointer.y;
       const distance = Math.hypot(deltaX, deltaY) || 1;
 
-      if (distance < pointer.radius) {
+      if (distance < pointer.radius && pointer.radius > 1) {
         const force = Math.pow(1 - distance / pointer.radius, 2);
-        x += (deltaX / distance) * force * Math.min(width, height) * 0.15;
-        y += (deltaY / distance) * force * Math.min(width, height) * 0.15;
-        x += pointer.velocityX * force * 0.18;
-        y += pointer.velocityY * force * 0.18;
+        const impulse = 4.4 + Math.min(12, Math.hypot(pointer.velocityX, pointer.velocityY) * 0.11);
+        particle.velocityX +=
+          ((deltaX / distance) * impulse + pointer.velocityX * 0.1) * force * frameScale;
+        particle.velocityY +=
+          ((deltaY / distance) * impulse + pointer.velocityY * 0.1) * force * frameScale;
+        particle.spin +=
+          (pointer.velocityX * deltaY - pointer.velocityY * deltaX) *
+          0.000003 *
+          force;
       }
 
-      const depthOpacity = Math.min(1, Math.max(0.28, distanceBelowSurface / (height * 0.22)));
-      drawShape(particle, x, y, isFloating ? 0.9 : depthOpacity);
+      const damping = Math.pow(0.94, frameScale);
+      particle.velocityX *= damping;
+      particle.velocityY *= damping;
+      particle.x += particle.velocityX * frameScale;
+      particle.y += particle.velocityY * frameScale;
+      particle.rotation += particle.spin * frameScale;
+      particle.spin *= Math.pow(0.975, frameScale);
+
+      drawShape(particle, particle.x, particle.y, particle.opacity);
     });
 
     context.globalAlpha = 1;
@@ -165,9 +179,9 @@ if (playground && canvas) {
   function animate(time) {
     const delta = Math.min(32, time - previousTime);
     previousTime = time;
-    pointer.velocityX *= Math.pow(0.92, delta / 16.67);
-    pointer.velocityY *= Math.pow(0.92, delta / 16.67);
-    draw(time);
+    pointer.velocityX *= Math.pow(0.86, delta / 16.67);
+    pointer.velocityY *= Math.pow(0.86, delta / 16.67);
+    draw(time, delta);
     animationFrame = requestAnimationFrame(animate);
   }
 
