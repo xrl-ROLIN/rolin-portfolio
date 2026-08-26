@@ -270,11 +270,28 @@ if (section && stage && canvas) {
   let frame = 0;
   let previousTime = performance.now();
   let visible = false;
+  let layoutWidth = 0;
+  let viewportResizeFrame = 0;
+
+  function syncStableViewportHeight(force = false) {
+    const nextWidth = document.documentElement.clientWidth;
+    if (!force && Math.abs(nextWidth - layoutWidth) < 16) return;
+    layoutWidth = nextWidth;
+    section.style.setProperty("--contact-vh", `${innerHeight * 0.01}px`);
+  }
 
   function resize() {
     const bounds = stage.getBoundingClientRect();
-    width = Math.max(1, bounds.width);
-    height = Math.max(1, bounds.height);
+    const nextWidth = Math.max(1, bounds.width);
+    const nextHeight = Math.max(1, bounds.height);
+    if (
+      Math.abs(nextWidth - width) < 1 &&
+      Math.abs(nextHeight - height) < 1
+    ) {
+      return;
+    }
+    width = nextWidth;
+    height = nextHeight;
     pixelRatio = Math.min(devicePixelRatio || 1, 1.6);
     canvas.width = Math.round(width * pixelRatio);
     canvas.height = Math.round(height * pixelRatio);
@@ -288,8 +305,14 @@ if (section && stage && canvas) {
 
   function updateScrollState() {
     const bounds = section.getBoundingClientRect();
-    const reveal = clamp((innerHeight - bounds.top) / (innerHeight * 0.75), 0, 1);
+    const reveal = clamp((height - bounds.top) / (height * 0.75), 0, 1);
     stage.style.setProperty("--contact-reveal", reveal.toFixed(4));
+  }
+
+  function renderParticles() {
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    context.clearRect(0, 0, width, height);
+    fluid.draw(context);
   }
 
   function animate(time) {
@@ -329,15 +352,27 @@ if (section && stage && canvas) {
     pointer.previousX = pointer.x;
     pointer.previousY = pointer.y;
 
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    context.clearRect(0, 0, width, height);
-    fluid.draw(context);
+    renderParticles();
     updateScrollState();
     frame = requestAnimationFrame(animate);
   }
 
   function start() {
-    if (frame || reducedMotion) return;
+    if (frame) return;
+    if (reducedMotion) {
+      const obstacle = {
+        x: -1000,
+        y: -1000,
+        radius: 0,
+        velocityX: 0,
+        velocityY: 0,
+      };
+      for (let index = 0; index < 90; index += 1) {
+        fluid.simulate(1 / 60, obstacle);
+      }
+      renderParticles();
+      return;
+    }
     previousTime = performance.now();
     frame = requestAnimationFrame(animate);
   }
@@ -354,12 +389,24 @@ if (section && stage && canvas) {
     pointer.active = true;
   }
 
-  stage.addEventListener("pointermove", updatePointer);
-  stage.addEventListener("pointerenter", updatePointer);
-  stage.addEventListener("pointerleave", () => {
+  function resetPointer() {
     pointer.active = false;
     pointer.down = false;
-  });
+    fluid.flushing = false;
+  }
+
+  function updateTouch(event) {
+    const touch = event.touches[0];
+    if (!touch) return;
+    updatePointer(touch);
+    pointer.down = true;
+  }
+
+  stage.addEventListener("pointermove", updatePointer);
+  stage.addEventListener("pointerenter", updatePointer);
+  stage.addEventListener("pointerleave", resetPointer);
+  stage.addEventListener("pointercancel", resetPointer);
+  stage.addEventListener("lostpointercapture", resetPointer);
   stage.addEventListener("pointerdown", (event) => {
     updatePointer(event);
     pointer.down = true;
@@ -370,7 +417,28 @@ if (section && stage && canvas) {
     pointer.down = false;
     stage.releasePointerCapture?.(event.pointerId);
   });
+  if (coarsePointer) {
+    stage.addEventListener("touchstart", updateTouch, { passive: true });
+    stage.addEventListener("touchmove", updateTouch, { passive: true });
+    stage.addEventListener("touchend", resetPointer, { passive: true });
+    stage.addEventListener("touchcancel", resetPointer, { passive: true });
+  }
   addEventListener("scroll", updateScrollState, { passive: true });
+  addEventListener(
+    "resize",
+    () => {
+      cancelAnimationFrame(viewportResizeFrame);
+      viewportResizeFrame = requestAnimationFrame(() => {
+        syncStableViewportHeight();
+        updateScrollState();
+      });
+    },
+    { passive: true },
+  );
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop();
+    else if (visible) start();
+  });
   new ResizeObserver(resize).observe(stage);
   new IntersectionObserver(
     ([entry]) => {
@@ -381,6 +449,7 @@ if (section && stage && canvas) {
     { rootMargin: "60% 0px", threshold: 0 },
   ).observe(section);
 
+  syncStableViewportHeight(true);
   resize();
   updateScrollState();
 }
