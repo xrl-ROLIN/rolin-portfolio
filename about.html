@@ -8,7 +8,7 @@
       name="description"
       content="About Ruoling, a visual designer working across brand, campaign, illustration, 3D and AIGC."
     />
-    <link rel="stylesheet" href="./about.css?v=3" />
+    <link rel="stylesheet" href="./about.css?v=4" />
     <link rel="stylesheet" href="./global-nav.css?v=2" />
   </head>
   <body>
@@ -30,5 +30,16 @@
         fetchpriority="high"
       />
     </main>
+
+    <section class="contact-playground" aria-label="Interactive contact field">
+      <canvas class="contact-playground__canvas" aria-hidden="true"></canvas>
+      <div class="contact-playground__copy">
+        <p>READY TO CREATE SOMETHING NEW?</p>
+        <h2>LET’S WORK<br />TOGETHER!</h2>
+      </div>
+      <span class="contact-playground__hint">MOVE TO PLAY</span>
+    </section>
+
+    <script src="./about-interaction.js?v=1"></script>
   </body>
 </html>
