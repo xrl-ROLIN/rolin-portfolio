@@ -27,13 +27,13 @@ if (section && stage && canvas) {
       const countX = Math.ceil(fit(width, 320, 2560, 20, 80) * 0.4);
       const countY = Math.ceil((countX * height) / width);
       this.maxParticles =
-        Math.ceil((countX * countY * 1.2) / 3) * 3;
+        Math.ceil((countX * countY * 1.4) / 3) * 3;
       this.radius = (width / resolution) * 0.2;
       this.minimumDistance = this.radius * 3;
       this.hashSize = this.minimumDistance;
       const aspectGravity = clamp(
-        height / width / 0.75,
-        0.42,
+        height / width / 0.9,
+        0.36,
         1,
       );
       this.gravity =
@@ -169,7 +169,7 @@ if (section && stage && canvas) {
         particle.y += deltaY * correction;
       }
 
-      const waveRadius = collisionRadius * 2.1;
+      const waveRadius = collisionRadius * 2.6;
       if (
         obstacle.radius > 0 &&
         distanceSquared > 0 &&
@@ -186,18 +186,18 @@ if (section && stage && canvas) {
           ) || 1;
         const falloff = Math.pow(1 - distance / waveRadius, 2);
         const spray = Math.min(
-          this.width * 1.5,
-          180 + pointerSpeed * 0.7,
+          this.width * 1.8,
+          220 + pointerSpeed * 0.85,
         );
         const waveVelocityX =
-          obstacle.velocityX * 0.5 +
-          normalX * spray * 0.55 +
-          tangentX * direction * spray * 0.24;
+          obstacle.velocityX * 0.55 +
+          normalX * spray * 0.65 +
+          tangentX * direction * spray * 0.32;
         const waveVelocityY =
-          obstacle.velocityY * 0.22 +
-          normalY * spray * 0.3 +
-          tangentY * direction * spray * 0.12 -
-          spray * 0.78;
+          obstacle.velocityY * 0.2 +
+          normalY * spray * 0.35 +
+          tangentY * direction * spray * 0.16 -
+          spray * 0.95;
         particle.previousX =
           particle.x - waveVelocityX * falloff * deltaTime;
         particle.previousY =
@@ -242,9 +242,9 @@ if (section && stage && canvas) {
       this.particles.forEach((particle) => {
         this.collide(particle, obstacle, dt);
         particle.velocityX =
-          ((particle.x - particle.previousX) / dt) * 0.985;
+          ((particle.x - particle.previousX) / dt) * 0.992;
         particle.velocityY =
-          ((particle.y - particle.previousY) / dt) * 0.985;
+          ((particle.y - particle.previousY) / dt) * 0.992;
         const speed = Math.hypot(particle.velocityX, particle.velocityY);
         if (speed > 0.01) {
           const direction = Math.atan2(

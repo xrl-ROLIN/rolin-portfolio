@@ -58,7 +58,7 @@ body {
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: 47%;
+  top: 43.5%;
   width: 100%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -76,7 +76,7 @@ body {
   position: relative;
   width: fit-content;
   margin: 0 auto;
-  font: 400 8.5vw / 0.9 "Helvetica Neue", Arial, sans-serif;
+  font: 400 7.8vw / 0.9 "Helvetica Neue", Arial, sans-serif;
   letter-spacing: -0.065em;
   text-align: center;
 }
@@ -206,7 +206,7 @@ body {
 
 @media (max-width: 700px) {
   .contact-playground__copy {
-    top: 47%;
+    top: 43.5%;
   }
 
   .contact-playground__copy p {
@@ -217,7 +217,7 @@ body {
 
   .contact-playground__copy h2 {
     width: 100%;
-    font-size: min(10.2vw, 60px);
+    font-size: min(9.2vw, 54px);
     line-height: 0.9;
   }
 
