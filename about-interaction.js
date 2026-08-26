@@ -26,13 +26,22 @@ if (section && stage && canvas) {
       const resolution = Math.ceil(fit(width, 320, 2560, 20, 90) * 0.4);
       const countX = Math.ceil(fit(width, 320, 2560, 20, 80) * 0.4);
       const countY = Math.ceil((countX * height) / width);
-      this.maxParticles = Math.ceil((countX * countY) / 3) * 3;
+      this.maxParticles =
+        Math.ceil((countX * countY * 1.2) / 3) * 3;
       this.radius = (width / resolution) * 0.2;
       this.minimumDistance = this.radius * 3;
       this.hashSize = this.minimumDistance;
-      this.gravity = Math.abs(
-        Math.ceil(fit(width, 320, 2560, -15, -3)) * 1.5 * (width / 2),
+      const aspectGravity = clamp(
+        height / width / 0.75,
+        0.42,
+        1,
       );
+      this.gravity =
+        Math.abs(
+          Math.ceil(fit(width, 320, 2560, -15, -3)) *
+            1.5 *
+            (width / 2),
+        ) * aspectGravity;
       this.particles.length = 0;
       this.emitCarry = 0;
       this.flushing = false;
@@ -144,18 +153,55 @@ if (section && stage && canvas) {
       const deltaY = particle.y - obstacle.y;
       const collisionRadius = obstacle.radius + this.radius;
       const distanceSquared = deltaX * deltaX + deltaY * deltaY;
+      const distance = Math.sqrt(distanceSquared);
+      const pointerSpeed = Math.hypot(
+        obstacle.velocityX,
+        obstacle.velocityY,
+      );
 
       if (
         obstacle.radius > 0 &&
         distanceSquared > 0 &&
         distanceSquared < collisionRadius * collisionRadius
       ) {
-        const distance = Math.sqrt(distanceSquared);
         const correction = (collisionRadius - distance) / distance;
         particle.x += deltaX * correction;
         particle.y += deltaY * correction;
-        particle.previousX = particle.x - obstacle.velocityX * 2 * deltaTime;
-        particle.previousY = particle.y - obstacle.velocityY * 2 * deltaTime;
+      }
+
+      const waveRadius = collisionRadius * 2.1;
+      if (
+        obstacle.radius > 0 &&
+        distanceSquared > 0 &&
+        distance < waveRadius
+      ) {
+        const normalX = deltaX / distance;
+        const normalY = deltaY / distance;
+        const tangentX = -normalY;
+        const tangentY = normalX;
+        const direction =
+          Math.sign(
+            obstacle.velocityX * deltaY -
+              obstacle.velocityY * deltaX,
+          ) || 1;
+        const falloff = Math.pow(1 - distance / waveRadius, 2);
+        const spray = Math.min(
+          this.width * 1.5,
+          180 + pointerSpeed * 0.7,
+        );
+        const waveVelocityX =
+          obstacle.velocityX * 0.5 +
+          normalX * spray * 0.55 +
+          tangentX * direction * spray * 0.24;
+        const waveVelocityY =
+          obstacle.velocityY * 0.22 +
+          normalY * spray * 0.3 +
+          tangentY * direction * spray * 0.12 -
+          spray * 0.78;
+        particle.previousX =
+          particle.x - waveVelocityX * falloff * deltaTime;
+        particle.previousY =
+          particle.y - waveVelocityY * falloff * deltaTime;
       }
 
       if (particle.x < minimumX) {
