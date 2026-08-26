@@ -31,8 +31,8 @@ body {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 6;
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
   cursor: default;
 }
 
@@ -42,7 +42,7 @@ body {
   height: 100%;
   overflow: hidden;
   isolation: isolate;
-  background: #000;
+  background: #fff;
 }
 
 .contact-playground__canvas {

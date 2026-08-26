@@ -267,7 +267,7 @@ if (section && stage && canvas) {
     }
 
     draw(context) {
-      context.fillStyle = "#fff";
+      context.fillStyle = "#000";
       const baseSize = this.radius;
       this.particles.forEach((particle) => {
         const movementScale = 1 + Math.min(1, Math.abs(particle.angularVelocity) * 0.01);
