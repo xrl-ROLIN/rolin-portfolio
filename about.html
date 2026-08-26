@@ -8,7 +8,7 @@
       name="description"
       content="About Ruoling, a visual designer working across brand, campaign, illustration, 3D and AIGC."
     />
-    <link rel="stylesheet" href="./about.css?v=5" />
+    <link rel="stylesheet" href="./about.css?v=6" />
     <link rel="stylesheet" href="./global-nav.css?v=2" />
   </head>
   <body>
@@ -32,14 +32,28 @@
     </main>
 
     <section class="contact-playground" id="contact-playground" aria-label="Interactive contact field">
-      <canvas class="contact-playground__canvas" aria-hidden="true"></canvas>
-      <div class="contact-playground__copy">
-        <p>IS YOUR BIG IDEA READY TO GO WILD?</p>
-        <h2>Let’s work<br />together!</h2>
+      <div class="contact-playground__stage">
+        <canvas class="contact-playground__canvas" aria-hidden="true"></canvas>
+        <div class="contact-playground__copy">
+          <div class="contact-playground__crosses" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <p>IS YOUR BIG IDEA READY TO GO WILD?</p>
+          <h2>
+            Let’s work<br />together!
+            <i class="contact-playground__line contact-playground__line--top" aria-hidden="true"></i>
+            <i class="contact-playground__line contact-playground__line--left" aria-hidden="true"></i>
+            <i class="contact-playground__line contact-playground__line--right" aria-hidden="true"></i>
+          </h2>
+        </div>
+        <div class="contact-playground__hint" aria-hidden="true">
+          <span class="contact-playground__arrow">↓</span>
+          <span>CONTINUE TO SCROLL</span>
+          <span class="contact-playground__arrow">↓</span>
+        </div>
       </div>
-      <span class="contact-playground__hint">MOVE TO PLAY</span>
     </section>
 
-    <script src="./about-interaction.js?v=2"></script>
+    <script src="./about-interaction.js?v=3"></script>
   </body>
 </html>

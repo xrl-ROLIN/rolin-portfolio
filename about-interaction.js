@@ -1,234 +1,386 @@
-const playground = document.querySelector(".contact-playground");
-const canvas = playground?.querySelector(".contact-playground__canvas");
+const section = document.querySelector(".contact-playground");
+const stage = section?.querySelector(".contact-playground__stage");
+const canvas = section?.querySelector(".contact-playground__canvas");
 
-if (playground && canvas) {
+if (section && stage && canvas) {
   const context = canvas.getContext("2d", { alpha: true });
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const pointer = {
-    x: 0,
-    y: 0,
-    targetX: 0,
-    targetY: 0,
-    velocityX: 0,
-    velocityY: 0,
-    radius: 0,
-    active: false,
-  };
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarsePointer = matchMedia("(pointer: coarse)").matches;
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const fit = (value, min, max, outMin, outMax) =>
+    outMin + ((clamp(value, min, max) - min) / (max - min)) * (outMax - outMin);
 
-  let width = 0;
-  let height = 0;
-  let pixelRatio = 1;
-  let particles = [];
-  let isVisible = false;
-  let animationFrame = 0;
-  let previousTime = performance.now();
+  class FluidParticles {
+    constructor() {
+      this.particles = [];
+      this.hash = new Map();
+      this.emitCarry = 0;
+      this.flushing = false;
+      this.emitterA = { x: 0, y: 0 };
+      this.emitterB = { x: 0, y: 0 };
+    }
 
-  function seededRandom(seed) {
-    const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-    return value - Math.floor(value);
-  }
+    reset(width, height) {
+      this.width = width;
+      this.height = height;
+      const resolution = Math.ceil(fit(width, 320, 2560, 20, 90) * 0.4);
+      const countX = Math.ceil(fit(width, 320, 2560, 20, 80) * 0.4);
+      const countY = Math.ceil((countX * height) / width);
+      this.maxParticles = Math.ceil((countX * countY) / 3) * 3;
+      this.radius = (width / resolution) * 0.2;
+      this.minimumDistance = this.radius * 3;
+      this.hashSize = this.minimumDistance;
+      this.gravity = Math.abs(
+        Math.ceil(fit(width, 320, 2560, -15, -3)) * 1.5 * (width / 2),
+      );
+      this.particles.length = 0;
+      this.emitCarry = 0;
+      this.flushing = false;
+      this.setEmitter(width * 0.5, height * 0.5, width * 0.5, height * 0.5);
+    }
 
-  function buildParticles() {
-    const gap = width < 700 ? 12 : 15;
-    const columns = Math.ceil(width / gap) + 8;
-    const rows = Math.ceil(height / gap) + 10;
-    const nextParticles = [];
+    setEmitter(ax, ay, bx, by) {
+      this.emitterA.x = ax;
+      this.emitterA.y = ay;
+      this.emitterB.x = bx;
+      this.emitterB.y = by;
+    }
 
-    for (let row = -5; row < rows; row += 1) {
-      for (let column = -4; column < columns; column += 1) {
-        const seed = row * 4099 + column * 131;
-        const typeValue = seededRandom(seed + 1);
-        const type = typeValue < 0.46 ? "square" : typeValue < 0.73 ? "circle" : "cross";
-        const homeX = column * gap + (seededRandom(seed + 2) - 0.5) * gap * 0.82;
-        const homeY = row * gap + (seededRandom(seed + 3) - 0.5) * gap * 0.82;
-        const surface =
-          height * 0.36 +
-          Math.sin(homeX * 0.0052) * height * 0.095 +
-          Math.sin(homeX * 0.012 + 1.7) * height * 0.045;
+    emit(deltaTime) {
+      this.emitCarry += 2000 * deltaTime;
+      let amount = Math.floor(this.emitCarry);
+      this.emitCarry -= amount;
 
-        if (homeY < surface) continue;
-        nextParticles.push({
-          homeX,
-          homeY,
-          x: homeX,
-          y: homeY,
+      while (amount > 0 && this.particles.length < this.maxParticles) {
+        const ratio = Math.random();
+        const x =
+          this.emitterA.x +
+          (this.emitterB.x - this.emitterA.x) * ratio +
+          (Math.random() - 0.5) * this.radius;
+        const y =
+          this.emitterA.y +
+          (this.emitterB.y - this.emitterA.y) * ratio +
+          (Math.random() - 0.5) * this.radius;
+        this.particles.push({
+          x,
+          y,
+          previousX: x,
+          previousY: y,
           velocityX: 0,
-          velocityY: 0,
-          phase: seededRandom(seed + 4) * Math.PI * 2,
-          drift: 0.5 + seededRandom(seed + 5) * 0.65,
-          type,
-          size:
-            type === "square"
-              ? 5.8 + seededRandom(seed + 7) * 3
-              : 3.4 + seededRandom(seed + 7) * 1.9,
-          rotation: seededRandom(seed + 8) * Math.PI,
-          spin: (seededRandom(seed + 9) - 0.5) * 0.012,
-          opacity: 0.78 + seededRandom(seed + 10) * 0.22,
+          velocityY: (2 + Math.pow(Math.random(), 2) * 3) * this.gravity * 0.1,
+          angle: Math.random() * Math.PI * 2,
+          angularVelocity: 0,
+          direction: Math.PI * 0.5,
+          shape: this.particles.length % 3,
+        });
+        amount -= 1;
+      }
+    }
+
+    rebuildHash() {
+      this.hash.clear();
+      const inverse = 1 / this.hashSize;
+      this.particles.forEach((particle, index) => {
+        const x = Math.floor(particle.x * inverse);
+        const y = Math.floor(particle.y * inverse);
+        const key = `${x}:${y}`;
+        const bucket = this.hash.get(key);
+        if (bucket) bucket.push(index);
+        else this.hash.set(key, [index]);
+      });
+    }
+
+    separate() {
+      const minimum = this.minimumDistance;
+      const minimumSquared = minimum * minimum;
+      const inverse = 1 / this.hashSize;
+
+      for (let pass = 0; pass < 4; pass += 1) {
+        this.rebuildHash();
+        this.particles.forEach((particle, index) => {
+          const cellX = Math.floor(particle.x * inverse);
+          const cellY = Math.floor(particle.y * inverse);
+
+          for (let x = cellX - 1; x <= cellX + 1; x += 1) {
+            for (let y = cellY - 1; y <= cellY + 1; y += 1) {
+              const bucket = this.hash.get(`${x}:${y}`);
+              if (!bucket) continue;
+
+              bucket.forEach((otherIndex) => {
+                if (otherIndex <= index) return;
+                const other = this.particles[otherIndex];
+                let deltaX = other.x - particle.x;
+                let deltaY = other.y - particle.y;
+                let distanceSquared = deltaX * deltaX + deltaY * deltaY;
+
+                if (distanceSquared >= minimumSquared) return;
+                if (distanceSquared < 0.0001) {
+                  deltaX = (Math.random() - 0.5) * 0.01;
+                  deltaY = (Math.random() - 0.5) * 0.01;
+                  distanceSquared = deltaX * deltaX + deltaY * deltaY;
+                }
+
+                const distance = Math.sqrt(distanceSquared);
+                const correction = (minimum - distance) / distance * 0.5;
+                deltaX *= correction;
+                deltaY *= correction;
+                particle.x -= deltaX;
+                particle.y -= deltaY;
+                other.x += deltaX;
+                other.y += deltaY;
+              });
+            }
+          }
         });
       }
     }
 
-    particles = nextParticles;
+    collide(particle, obstacle, deltaTime) {
+      const minimumX = this.radius;
+      const maximumX = this.width - this.radius;
+      const minimumY = this.radius;
+      const maximumY = this.height - this.radius;
+      const deltaX = particle.x - obstacle.x;
+      const deltaY = particle.y - obstacle.y;
+      const collisionRadius = obstacle.radius + this.radius;
+      const distanceSquared = deltaX * deltaX + deltaY * deltaY;
+
+      if (
+        obstacle.radius > 0 &&
+        distanceSquared > 0 &&
+        distanceSquared < collisionRadius * collisionRadius
+      ) {
+        const distance = Math.sqrt(distanceSquared);
+        const correction = (collisionRadius - distance) / distance;
+        particle.x += deltaX * correction;
+        particle.y += deltaY * correction;
+        particle.previousX = particle.x - obstacle.velocityX * 2 * deltaTime;
+        particle.previousY = particle.y - obstacle.velocityY * 2 * deltaTime;
+      }
+
+      if (particle.x < minimumX) {
+        particle.x = minimumX;
+        particle.previousX = particle.x;
+      } else if (particle.x > maximumX) {
+        particle.x = maximumX;
+        particle.previousX = particle.x;
+      }
+
+      if (particle.y < minimumY) {
+        particle.y = minimumY;
+        particle.previousY = particle.y;
+      } else if (particle.y > maximumY) {
+        if (this.flushing) {
+          particle.remove = true;
+        } else {
+          particle.y = maximumY;
+          particle.previousY = particle.y;
+        }
+      }
+    }
+
+    simulate(deltaTime, obstacle) {
+      const dt = Math.min(deltaTime, 1 / 60);
+      this.emit(dt);
+
+      this.particles.forEach((particle) => {
+        particle.previousX = particle.x;
+        particle.previousY = particle.y;
+        particle.velocityY += this.gravity * dt;
+        particle.x += particle.velocityX * dt;
+        particle.y += particle.velocityY * dt;
+      });
+
+      this.separate();
+
+      this.particles.forEach((particle) => {
+        this.collide(particle, obstacle, dt);
+        particle.velocityX =
+          ((particle.x - particle.previousX) / dt) * 0.985;
+        particle.velocityY =
+          ((particle.y - particle.previousY) / dt) * 0.985;
+        const speed = Math.hypot(particle.velocityX, particle.velocityY);
+        if (speed > 0.01) {
+          const direction = Math.atan2(
+            particle.velocityY,
+            particle.velocityX,
+          );
+          let change = direction - particle.direction;
+          while (change > Math.PI) change -= Math.PI * 2;
+          while (change < -Math.PI) change += Math.PI * 2;
+          particle.angularVelocity += speed * change * 0.002;
+          particle.angularVelocity *= Math.exp(-4 * dt);
+          particle.angle += particle.angularVelocity * dt;
+          particle.direction = direction;
+        }
+      });
+
+      if (this.flushing) {
+        this.particles = this.particles.filter((particle) => !particle.remove);
+      }
+    }
+
+    draw(context) {
+      context.fillStyle = "#fff";
+      const baseSize = this.radius;
+      this.particles.forEach((particle) => {
+        const movementScale = 1 + Math.min(1, Math.abs(particle.angularVelocity) * 0.01);
+        const size = baseSize * movementScale;
+        context.save();
+        context.translate(particle.x, particle.y);
+        context.rotate(particle.angle);
+
+        if (particle.shape === 0) {
+          const arm = size * 0.5;
+          const stroke = size * 0.14;
+          context.fillRect(-arm, -stroke * 0.5, arm * 2, stroke);
+          context.fillRect(-stroke * 0.5, -arm, stroke, arm * 2);
+        } else if (particle.shape === 1) {
+          const squareSize = size;
+          context.fillRect(
+            -squareSize * 0.5,
+            -squareSize * 0.5,
+            squareSize,
+            squareSize,
+          );
+        } else {
+          context.beginPath();
+          context.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+          context.fill();
+        }
+        context.restore();
+      });
+    }
   }
 
-  function resizeCanvas() {
-    const bounds = playground.getBoundingClientRect();
+  const fluid = new FluidParticles();
+  const pointer = {
+    x: 0,
+    y: 0,
+    previousX: 0,
+    previousY: 0,
+    velocityX: 0,
+    velocityY: 0,
+    active: false,
+    down: false,
+  };
+  let width = 1;
+  let height = 1;
+  let pixelRatio = 1;
+  let frame = 0;
+  let previousTime = performance.now();
+  let visible = false;
+
+  function resize() {
+    const bounds = stage.getBoundingClientRect();
     width = Math.max(1, bounds.width);
     height = Math.max(1, bounds.height);
-    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.6);
+    pixelRatio = Math.min(devicePixelRatio || 1, 1.6);
     canvas.width = Math.round(width * pixelRatio);
     canvas.height = Math.round(height * pixelRatio);
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
-    pointer.x = pointer.targetX = width * 0.5;
-    pointer.y = pointer.targetY = height * 0.5;
-    buildParticles();
-    draw(performance.now());
-  }
-
-  function drawShape(particle, x, y, opacity) {
-    const size = particle.size;
-    context.globalAlpha = opacity;
-
-    if (particle.type === "circle") {
-      context.beginPath();
-      context.arc(x, y, size * 0.48, 0, Math.PI * 2);
-      context.fill();
-      return;
-    }
-
-    if (particle.type === "cross") {
-      const arm = size * 0.58;
-      const stroke = Math.max(1.1, size * 0.2);
-      context.save();
-      context.translate(x, y);
-      context.rotate(particle.rotation);
-      context.fillRect(-arm, -stroke * 0.5, arm * 2, stroke);
-      context.fillRect(-stroke * 0.5, -arm, stroke, arm * 2);
-      context.restore();
-      return;
-    }
-
-    context.save();
-    context.translate(x, y);
-    context.rotate(particle.rotation * 0.35);
-    context.fillRect(-size * 0.5, -size * 0.5, size, size);
-    context.restore();
-  }
-
-  function draw(time, delta = 16.67) {
-    const seconds = reducedMotion ? 0 : time * 0.001;
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = "#ffffff";
+    fluid.reset(width, height);
+    pointer.x = pointer.previousX = width * 0.5;
+    pointer.y = pointer.previousY = height * 0.5;
+  }
 
-    pointer.x += (pointer.targetX - pointer.x) * 0.22;
-    pointer.y += (pointer.targetY - pointer.y) * 0.22;
-    const targetRadius =
-      pointer.active && !reducedMotion
-        ? width < 700
-          ? Math.min(105, width * 0.34)
-          : Math.min(165, width * 0.11)
-        : 0;
-    pointer.radius += (targetRadius - pointer.radius) * 0.16;
-    const frameScale = Math.min(1.8, delta / 16.67);
-
-    particles.forEach((particle) => {
-      const wave =
-        Math.sin(particle.homeX * 0.0054 + seconds * 0.78) * 8 +
-        Math.sin(particle.homeX * 0.013 - seconds * 0.43 + particle.phase) * 3.5;
-      const targetX =
-        particle.homeX +
-        Math.sin(seconds * particle.drift + particle.phase) * 1.8;
-      const targetY = particle.homeY + wave;
-
-      particle.velocityX += (targetX - particle.x) * 0.01 * frameScale;
-      particle.velocityY += (targetY - particle.y) * 0.01 * frameScale;
-
-      const deltaX = particle.x - pointer.x;
-      const deltaY = particle.y - pointer.y;
-      const distance = Math.hypot(deltaX, deltaY) || 1;
-
-      if (distance < pointer.radius && pointer.radius > 1) {
-        const force = Math.pow(1 - distance / pointer.radius, 2);
-        const impulse = 4.4 + Math.min(12, Math.hypot(pointer.velocityX, pointer.velocityY) * 0.11);
-        particle.velocityX +=
-          ((deltaX / distance) * impulse + pointer.velocityX * 0.1) * force * frameScale;
-        particle.velocityY +=
-          ((deltaY / distance) * impulse + pointer.velocityY * 0.1) * force * frameScale;
-        particle.spin +=
-          (pointer.velocityX * deltaY - pointer.velocityY * deltaX) *
-          0.000003 *
-          force;
-      }
-
-      const damping = Math.pow(0.94, frameScale);
-      particle.velocityX *= damping;
-      particle.velocityY *= damping;
-      particle.x += particle.velocityX * frameScale;
-      particle.y += particle.velocityY * frameScale;
-      particle.rotation += particle.spin * frameScale;
-      particle.spin *= Math.pow(0.975, frameScale);
-
-      drawShape(particle, particle.x, particle.y, particle.opacity);
-    });
-
-    context.globalAlpha = 1;
+  function updateScrollState() {
+    const bounds = section.getBoundingClientRect();
+    const reveal = clamp((innerHeight - bounds.top) / (innerHeight * 0.75), 0, 1);
+    stage.style.setProperty("--contact-reveal", reveal.toFixed(4));
   }
 
   function animate(time) {
-    const delta = Math.min(32, time - previousTime);
+    const deltaTime = Math.max(
+      1 / 120,
+      Math.min(1 / 30, (time - previousTime) / 1000),
+    );
     previousTime = time;
-    pointer.velocityX *= Math.pow(0.86, delta / 16.67);
-    pointer.velocityY *= Math.pow(0.86, delta / 16.67);
-    draw(time, delta);
-    animationFrame = requestAnimationFrame(animate);
+    pointer.velocityX = (pointer.x - pointer.previousX) / deltaTime;
+    pointer.velocityY = (pointer.y - pointer.previousY) / deltaTime;
+    const speed = Math.hypot(pointer.velocityX, pointer.velocityY);
+    const radius =
+      pointer.active && !(pointer.down && !coarsePointer)
+        ? 75 * (coarsePointer && pointer.down ? 0.35 : fit(speed, 0, width, 0.2, 1))
+        : 0;
+
+    if (pointer.down && !coarsePointer) {
+      fluid.flushing = true;
+      fluid.setEmitter(
+        pointer.previousX,
+        pointer.previousY,
+        pointer.x,
+        pointer.y,
+      );
+    } else {
+      fluid.flushing = false;
+      fluid.setEmitter(width * 0.5, height * 0.5, width * 0.5, height * 0.5);
+    }
+
+    fluid.simulate(deltaTime, {
+      x: pointer.x,
+      y: pointer.y,
+      radius,
+      velocityX: pointer.velocityX,
+      velocityY: pointer.velocityY,
+    });
+    pointer.previousX = pointer.x;
+    pointer.previousY = pointer.y;
+
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    context.clearRect(0, 0, width, height);
+    fluid.draw(context);
+    updateScrollState();
+    frame = requestAnimationFrame(animate);
   }
 
-  function startAnimation() {
-    if (animationFrame || reducedMotion) return;
+  function start() {
+    if (frame || reducedMotion) return;
     previousTime = performance.now();
-    animationFrame = requestAnimationFrame(animate);
+    frame = requestAnimationFrame(animate);
   }
 
-  function stopAnimation() {
-    if (!animationFrame) return;
-    cancelAnimationFrame(animationFrame);
-    animationFrame = 0;
+  function stop() {
+    cancelAnimationFrame(frame);
+    frame = 0;
   }
 
-  playground.addEventListener("pointermove", (event) => {
-    const bounds = playground.getBoundingClientRect();
-    const nextX = event.clientX - bounds.left;
-    const nextY = event.clientY - bounds.top;
-    pointer.velocityX = nextX - pointer.targetX;
-    pointer.velocityY = nextY - pointer.targetY;
-    pointer.targetX = nextX;
-    pointer.targetY = nextY;
+  function updatePointer(event) {
+    const bounds = stage.getBoundingClientRect();
+    pointer.x = clamp(event.clientX - bounds.left, 0, width);
+    pointer.y = clamp(event.clientY - bounds.top, 0, height);
     pointer.active = true;
-  });
+  }
 
-  playground.addEventListener("pointerleave", () => {
+  stage.addEventListener("pointermove", updatePointer);
+  stage.addEventListener("pointerenter", updatePointer);
+  stage.addEventListener("pointerleave", () => {
     pointer.active = false;
+    pointer.down = false;
   });
-
-  playground.addEventListener("pointercancel", () => {
-    pointer.active = false;
+  stage.addEventListener("pointerdown", (event) => {
+    updatePointer(event);
+    pointer.down = true;
+    stage.setPointerCapture?.(event.pointerId);
   });
-
-  new ResizeObserver(resizeCanvas).observe(playground);
-
+  stage.addEventListener("pointerup", (event) => {
+    updatePointer(event);
+    pointer.down = false;
+    stage.releasePointerCapture?.(event.pointerId);
+  });
+  addEventListener("scroll", updateScrollState, { passive: true });
+  new ResizeObserver(resize).observe(stage);
   new IntersectionObserver(
     ([entry]) => {
-      isVisible = entry.isIntersecting;
-      if (isVisible) {
-        startAnimation();
-      } else {
-        stopAnimation();
-      }
+      visible = entry.isIntersecting;
+      if (visible) start();
+      else stop();
     },
-    { threshold: 0.02 },
-  ).observe(playground);
+    { rootMargin: "60% 0px", threshold: 0 },
+  ).observe(section);
 
-  resizeCanvas();
+  resize();
+  updateScrollState();
 }
