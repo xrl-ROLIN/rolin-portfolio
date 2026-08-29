@@ -164,8 +164,8 @@ const categories = {
         year: "2026",
         type: "video-pair",
         sources: [
-          "./assets/moy/02-preview.mp4",
-          "./assets/moy/02-highlight.mp4",
+          "./assets/optimized/moy-preview-fast.mp4?v=1",
+          "./assets/optimized/moy-highlight-fast.mp4?v=1",
         ],
         className: "media-figure--moy media-figure--video-pair",
       },
@@ -1539,6 +1539,15 @@ const deferredVideoObserver = new IntersectionObserver(
       entry.target.querySelectorAll("video[data-src]").forEach((video) => {
         video.src = video.dataset.src;
         delete video.dataset.src;
+        video.addEventListener(
+          "canplay",
+          () => {
+            if (entry.target.classList.contains("is-visible")) {
+              video.play().catch(() => {});
+            }
+          },
+          { once: true },
+        );
         video.load();
       });
       currentObserver.unobserve(entry.target);
@@ -1559,7 +1568,17 @@ const observer = new IntersectionObserver(
       const videos = entry.target.querySelectorAll("video");
       if (entry.isIntersecting) {
         entry.target.classList.add("is-visible");
-        videos.forEach((video) => video.play().catch(() => {}));
+        videos.forEach((video) => {
+          if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+            video.play().catch(() => {});
+          } else {
+            video.addEventListener(
+              "canplay",
+              () => video.play().catch(() => {}),
+              { once: true },
+            );
+          }
+        });
       } else {
         videos.forEach((video) => video.pause());
       }
