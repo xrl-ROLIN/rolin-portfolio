@@ -220,7 +220,7 @@ const categories = {
         focus: "Self-Created Campaign / Visual System",
         year: "2026",
         type: "image",
-        src: "./assets/live-moment/04-self-created.webp",
+        src: "./assets/live-moment/04-self-created-v2.webp?v=1",
         alt: "LIVE MOMENT self-created campaign system",
         className: "media-figure--moy",
       },
