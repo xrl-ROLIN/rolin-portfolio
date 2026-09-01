@@ -1480,17 +1480,41 @@ stream.append(nextLink);
 
 const nextTransition = document.querySelector(".next-section-transition");
 const nextTransitionVideo = document.querySelector(".next-section-transition__video");
+const nextTransitionLottie = document.querySelector(".next-section-transition__lottie");
 const nextTransitionLabel = document.querySelector(".next-section-transition__label");
 let nextTransitionStarted = false;
+let brandTransitionAnimation = null;
+let brandTransitionReady = false;
 
 if (categoryKey === "illustration") {
   nextTransition.classList.add("is-brand-packaging");
-  nextTransitionVideo.src = "./assets/transitions/brand-packaging-v16.mp4?v=1";
   nextTransitionLabel.innerHTML = `
     <span><i>BRAND&amp;</i></span>
     <span><i>PACKAGING</i></span>
   `;
   nextTransitionLabel.hidden = false;
+  if (window.lottie && nextTransitionLottie) {
+    nextTransitionVideo.removeAttribute("src");
+    nextTransitionVideo.load();
+    nextTransition.classList.add("has-lottie");
+    brandTransitionAnimation = window.lottie.loadAnimation({
+      container: nextTransitionLottie,
+      renderer: "svg",
+      loop: false,
+      autoplay: false,
+      path: "./assets/transitions/archer-interactive-gray.json",
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid meet",
+        progressiveLoad: true,
+      },
+    });
+    brandTransitionAnimation.addEventListener("DOMLoaded", () => {
+      brandTransitionReady = true;
+      brandTransitionAnimation.goToAndStop(0, true);
+    });
+  } else {
+    nextTransitionVideo.src = "./assets/transitions/brand-packaging-v16.mp4?v=1";
+  }
 } else if (categoryKey === "brand") {
   nextTransition.classList.add("is-three-d-aigc");
   nextTransitionVideo.src = "./assets/transitions/3d-aigc-bike-v6.mp4?v=1";
@@ -1522,24 +1546,32 @@ nextLink.addEventListener("click", (event) => {
   };
 
   document.body.classList.add("is-next-transition");
-  nextTransitionVideo.currentTime = 0;
-  nextTransitionVideo.playbackRate = 1;
 
   const usePointerScrub =
     categoryKey === "illustration" && matchMedia("(pointer: fine)").matches;
 
-  if (usePointerScrub) {
-    nextTransition.classList.add("is-pointer-driven");
-    nextTransitionVideo.preload = "auto";
-    nextTransitionVideo.pause();
+  if (categoryKey === "illustration" && brandTransitionAnimation) {
+    const startLottieTransition = () => {
+      const totalFrames = Math.max(1, brandTransitionAnimation.totalFrames - 1);
 
-    const startPointerScrub = () => {
-      const duration = nextTransitionVideo.duration || 4.88;
-      let currentTime = 0;
-      let targetTime = 0;
+      if (!usePointerScrub) {
+        const updateAutoTitle = () => {
+          const progress = brandTransitionAnimation.currentFrame / totalFrames;
+          nextTransition.classList.toggle("is-title-visible", progress >= 0.5);
+        };
+        brandTransitionAnimation.addEventListener("enterFrame", updateAutoTitle);
+        brandTransitionAnimation.addEventListener("complete", navigate);
+        brandTransitionAnimation.setSpeed(1.08);
+        brandTransitionAnimation.goToAndPlay(0, true);
+        navigationTimer = window.setTimeout(navigate, 5600);
+        return;
+      }
+
+      nextTransition.classList.add("is-pointer-driven");
+      let currentProgress = 0;
+      let targetProgress = 0;
       let lastX = event.clientX;
       let lastY = event.clientY;
-      let scrubFrame = 0;
       let completed = false;
 
       const finish = () => {
@@ -1547,12 +1579,13 @@ nextLink.addEventListener("click", (event) => {
         completed = true;
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("wheel", onWheel);
+        window.removeEventListener("keydown", onKeyDown);
         window.clearTimeout(navigationTimer);
         window.setTimeout(navigate, 420);
       };
 
       const advance = (distance) => {
-        targetTime = Math.min(duration, targetTime + distance * 0.0028);
+        targetProgress = Math.min(1, targetProgress + distance / 1900);
       };
 
       const onPointerMove = (pointerEvent) => {
@@ -1569,48 +1602,49 @@ nextLink.addEventListener("click", (event) => {
         advance(Math.abs(wheelEvent.deltaY) * 0.8);
       };
 
-      const updateScrub = () => {
-        currentTime += (targetTime - currentTime) * 0.24;
-        if (Math.abs(nextTransitionVideo.currentTime - currentTime) > 0.006) {
-          nextTransitionVideo.currentTime = currentTime;
+      const onKeyDown = (keyEvent) => {
+        if (keyEvent.key === "ArrowRight" || keyEvent.key === " ") {
+          keyEvent.preventDefault();
+          advance(180);
         }
-        nextTransition.classList.toggle("is-title-visible", currentTime >= 2.65);
+      };
 
-        if (currentTime >= duration - 0.04 && targetTime >= duration) {
+      const updateScrub = () => {
+        currentProgress += (targetProgress - currentProgress) * 0.2;
+        brandTransitionAnimation.goToAndStop(currentProgress * totalFrames, true);
+        nextTransition.classList.toggle(
+          "is-title-visible",
+          currentProgress >= 0.5,
+        );
+
+        if (currentProgress >= 0.997 && targetProgress >= 1) {
           finish();
           return;
         }
-        scrubFrame = requestAnimationFrame(updateScrub);
+        requestAnimationFrame(updateScrub);
       };
 
       window.addEventListener("pointermove", onPointerMove, { passive: true });
       window.addEventListener("wheel", onWheel, { passive: true });
-      scrubFrame = requestAnimationFrame(updateScrub);
+      window.addEventListener("keydown", onKeyDown);
+      requestAnimationFrame(updateScrub);
       navigationTimer = window.setTimeout(() => {
-        targetTime = duration;
+        targetProgress = 1;
       }, 12000);
     };
 
-    if (nextTransitionVideo.readyState >= HTMLMediaElement.HAVE_METADATA) {
-      startPointerScrub();
+    if (brandTransitionReady) {
+      startLottieTransition();
     } else {
-      nextTransitionVideo.addEventListener("loadedmetadata", startPointerScrub, {
+      brandTransitionAnimation.addEventListener("DOMLoaded", startLottieTransition, {
         once: true,
       });
-      nextTransitionVideo.load();
     }
     return;
   }
 
-  if (categoryKey === "illustration") {
-    nextTransitionVideo.addEventListener("timeupdate", () => {
-      nextTransition.classList.toggle(
-        "is-title-visible",
-        nextTransitionVideo.currentTime >= 2.65,
-      );
-    });
-  }
-
+  nextTransitionVideo.currentTime = 0;
+  nextTransitionVideo.playbackRate = 1;
   nextTransitionVideo.play().catch(navigate);
   nextTransitionVideo.addEventListener("ended", navigate, { once: true });
   navigationTimer = window.setTimeout(
