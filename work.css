@@ -1554,7 +1554,7 @@ body {
 .next-section-transition {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: 10000;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -1584,6 +1584,11 @@ body {
 
 body.is-next-transition {
   overflow: hidden;
+}
+
+body.is-next-transition header.global-nav {
+  visibility: hidden;
+  opacity: 0;
 }
 
 body.is-next-transition .next-section-transition {
