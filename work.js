@@ -1030,9 +1030,6 @@ function renderBrandDirectory() {
   directory.innerHTML = `
     <header class="brand-directory__masthead">
       <strong>BRAND&amp;<br />PACKAGING</strong>
-      <span><u>Work</u>, About</span>
-      <span>Shanghai / CST</span>
-      <a href="./index.html#about">Contact</a>
       <p>
         The studio is shaped by work that connects identity, image and objects.
         Each project becomes a case study and a meaningful part of the portfolio.
