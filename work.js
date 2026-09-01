@@ -1485,9 +1485,12 @@ let nextTransitionStarted = false;
 
 if (categoryKey === "illustration") {
   nextTransition.classList.add("is-brand-packaging");
-  nextTransitionVideo.src = "./assets/transitions/brand-packaging-v15.mp4?v=1";
-  nextTransitionLabel.textContent = "";
-  nextTransitionLabel.hidden = true;
+  nextTransitionVideo.src = "./assets/transitions/brand-packaging-v16.mp4?v=1";
+  nextTransitionLabel.innerHTML = `
+    <span><i>BRAND&amp;</i></span>
+    <span><i>PACKAGING</i></span>
+  `;
+  nextTransitionLabel.hidden = false;
 } else if (categoryKey === "brand") {
   nextTransition.classList.add("is-three-d-aigc");
   nextTransitionVideo.src = "./assets/transitions/3d-aigc-bike-v6.mp4?v=1";
@@ -1521,6 +1524,93 @@ nextLink.addEventListener("click", (event) => {
   document.body.classList.add("is-next-transition");
   nextTransitionVideo.currentTime = 0;
   nextTransitionVideo.playbackRate = 1;
+
+  const usePointerScrub =
+    categoryKey === "illustration" && matchMedia("(pointer: fine)").matches;
+
+  if (usePointerScrub) {
+    nextTransition.classList.add("is-pointer-driven");
+    nextTransitionVideo.preload = "auto";
+    nextTransitionVideo.pause();
+
+    const startPointerScrub = () => {
+      const duration = nextTransitionVideo.duration || 4.88;
+      let currentTime = 0;
+      let targetTime = 0;
+      let lastX = event.clientX;
+      let lastY = event.clientY;
+      let scrubFrame = 0;
+      let completed = false;
+
+      const finish = () => {
+        if (completed) return;
+        completed = true;
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("wheel", onWheel);
+        window.clearTimeout(navigationTimer);
+        window.setTimeout(navigate, 420);
+      };
+
+      const advance = (distance) => {
+        targetTime = Math.min(duration, targetTime + distance * 0.0028);
+      };
+
+      const onPointerMove = (pointerEvent) => {
+        const distance = Math.hypot(
+          pointerEvent.clientX - lastX,
+          pointerEvent.clientY - lastY,
+        );
+        lastX = pointerEvent.clientX;
+        lastY = pointerEvent.clientY;
+        if (distance > 0.8) advance(distance);
+      };
+
+      const onWheel = (wheelEvent) => {
+        advance(Math.abs(wheelEvent.deltaY) * 0.8);
+      };
+
+      const updateScrub = () => {
+        currentTime += (targetTime - currentTime) * 0.24;
+        if (Math.abs(nextTransitionVideo.currentTime - currentTime) > 0.006) {
+          nextTransitionVideo.currentTime = currentTime;
+        }
+        nextTransition.classList.toggle("is-title-visible", currentTime >= 2.65);
+
+        if (currentTime >= duration - 0.04 && targetTime >= duration) {
+          finish();
+          return;
+        }
+        scrubFrame = requestAnimationFrame(updateScrub);
+      };
+
+      window.addEventListener("pointermove", onPointerMove, { passive: true });
+      window.addEventListener("wheel", onWheel, { passive: true });
+      scrubFrame = requestAnimationFrame(updateScrub);
+      navigationTimer = window.setTimeout(() => {
+        targetTime = duration;
+      }, 12000);
+    };
+
+    if (nextTransitionVideo.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      startPointerScrub();
+    } else {
+      nextTransitionVideo.addEventListener("loadedmetadata", startPointerScrub, {
+        once: true,
+      });
+      nextTransitionVideo.load();
+    }
+    return;
+  }
+
+  if (categoryKey === "illustration") {
+    nextTransitionVideo.addEventListener("timeupdate", () => {
+      nextTransition.classList.toggle(
+        "is-title-visible",
+        nextTransitionVideo.currentTime >= 2.65,
+      );
+    });
+  }
+
   nextTransitionVideo.play().catch(navigate);
   nextTransitionVideo.addEventListener("ended", navigate, { once: true });
   navigationTimer = window.setTimeout(
