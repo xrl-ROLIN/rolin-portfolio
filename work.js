@@ -225,6 +225,17 @@ const categories = {
         className: "media-figure--moy",
       },
       {
+        title: "Regional Fest",
+        description:
+          "Honor Wall Badges (Online & Offline),Gift Box, 3D Modeling, Rendering & Motion, Helping Honor-Related Assets Form A Unified And Memorable Visual Expression Across Event Pages, Promotional Materials, And Offline Delivery Touchpoints",
+        focus: "Honor System / Regional Identity",
+        year: "2026",
+        type: "image",
+        src: "./assets/regional-fest/00-regional-fest.gif",
+        alt: "Regional FEST animated campaign overview",
+        className: "media-figure--moy",
+      },
+      {
         title: "Regional Fest Honor",
         description:
           "Six regional honor identities share one premium metallic language while retaining individual symbols and market character.",
@@ -710,7 +721,7 @@ const regionalFestSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(21, 23).forEach((section) => {
+categories.campaign.sections.slice(21, 24).forEach((section) => {
   Object.assign(section, regionalFestSharedInfo);
 });
 
@@ -722,7 +733,7 @@ const hackathonSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(24, 27).forEach((section) => {
+categories.campaign.sections.slice(25, 28).forEach((section) => {
   Object.assign(section, hackathonSharedInfo);
 });
 
