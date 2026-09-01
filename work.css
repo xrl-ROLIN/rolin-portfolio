@@ -1081,6 +1081,8 @@ body {
   aspect-ratio: auto;
   background: transparent;
   overflow: visible;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
 }
 
 .media-figure::after {
@@ -1118,6 +1120,7 @@ body {
   width: min(64%, 760px);
   margin-right: auto;
   margin-left: auto;
+  contain-intrinsic-size: auto 1000px;
 }
 
 .media-figure--catffee-posters {

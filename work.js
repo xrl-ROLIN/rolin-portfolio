@@ -230,9 +230,8 @@ const categories = {
           "Honor Wall Badges (Online & Offline),Gift Box, 3D Modeling, Rendering & Motion, Helping Honor-Related Assets Form A Unified And Memorable Visual Expression Across Event Pages, Promotional Materials, And Offline Delivery Touchpoints",
         focus: "Honor System / Regional Identity",
         year: "2026",
-        type: "image",
-        src: "./assets/regional-fest/00-regional-fest.gif",
-        alt: "Regional FEST animated campaign overview",
+        type: "video",
+        src: "./assets/regional-fest/00-regional-fest.mp4",
         className: "media-figure--moy",
       },
       {
@@ -1632,9 +1631,18 @@ function renderScroll() {
   progressNumber.textContent = String(Math.round(progress * 100)).padStart(2, "0");
 }
 
+let scrollRenderFrame = 0;
+function scheduleRenderScroll() {
+  if (scrollRenderFrame) return;
+  scrollRenderFrame = requestAnimationFrame(() => {
+    scrollRenderFrame = 0;
+    renderScroll();
+  });
+}
+
 updateAside(0, true);
 renderScroll();
-(illustrationSplit ? stream : window).addEventListener("scroll", renderScroll, {
+(illustrationSplit ? stream : window).addEventListener("scroll", scheduleRenderScroll, {
   passive: true,
 });
-window.addEventListener("resize", renderScroll);
+window.addEventListener("resize", scheduleRenderScroll);
