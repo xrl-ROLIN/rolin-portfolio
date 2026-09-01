@@ -2,32 +2,32 @@ const projects = {
   bingo: {
     title: "BinGo",
     images: [
-      ["./assets/brand-projects/bingo/01-background.webp", "BinGo brand background", 3200, 1800],
-      ["./assets/brand-projects/bingo/02-slogan.webp", "BinGo slogan", 3200, 1537],
-      ["./assets/brand-projects/bingo/03-brand-system.webp", "BinGo brand system", 3200, 2032],
-      ["./assets/brand-projects/bingo/04-product-family.webp", "BinGo product family", 3200, 1800],
-      ["./assets/brand-projects/bingo/05-product-scene.webp", "BinGo product scene", 3200, 1800],
-      ["./assets/brand-projects/bingo/06-outdoor-campaign.webp", "BinGo outdoor campaign", 3200, 1800],
-      ["./assets/brand-projects/bingo/07-market-analysis.webp", "BinGo market analysis", 3200, 1800],
+      ["./assets/optimized/brand-project-bingo-01-background-fast.webp", "BinGo brand background", 2400, 1350],
+      ["./assets/optimized/brand-project-bingo-07-market-analysis-fast.webp", "BinGo market analysis", 2400, 1350],
+      ["./assets/optimized/brand-project-bingo-02-slogan-fast.webp", "BinGo slogan", 2400, 1153],
+      ["./assets/optimized/brand-project-bingo-03-brand-system-fast.webp", "BinGo brand system", 2400, 1524],
+      ["./assets/optimized/brand-project-bingo-04-product-family-fast.webp", "BinGo product family", 2400, 1350],
+      ["./assets/optimized/brand-project-bingo-05-product-scene-fast.webp", "BinGo product scene", 2400, 1350],
+      ["./assets/optimized/brand-project-bingo-06-outdoor-campaign-fast.webp", "BinGo outdoor campaign", 2400, 1350],
     ],
   },
   stillwood: {
     title: "StillWood",
     images: [
-      ["./assets/brand-projects/stillwood/01-hero.webp", "StillWood product hero", 3200, 1777],
-      ["./assets/brand-projects/stillwood/02-background.webp", "StillWood brand background", 3200, 2245],
-      ["./assets/brand-projects/stillwood/03-market-analysis.webp", "StillWood market analysis", 3200, 1795],
-      ["./assets/brand-projects/stillwood/04-brand-title.webp", "StillWood brand title", 3200, 1469],
-      ["./assets/brand-projects/stillwood/05-rendering.webp", "StillWood packaging rendering", 3200, 1530],
+      ["./assets/optimized/brand-project-stillwood-01-hero-fast.webp", "StillWood product hero", 2400, 1333],
+      ["./assets/optimized/brand-project-stillwood-02-background-fast.webp", "StillWood brand background", 2400, 1684],
+      ["./assets/optimized/brand-project-stillwood-03-market-analysis-fast.webp", "StillWood market analysis", 2400, 1347],
+      ["./assets/optimized/brand-project-stillwood-04-brand-title-fast.webp", "StillWood brand title", 2400, 1102],
+      ["./assets/optimized/brand-project-stillwood-05-rendering-fast.webp", "StillWood packaging rendering", 2400, 1148],
     ],
   },
   logo: {
     title: "Logo",
-    images: [["./assets/brand-projects/logo/01-logo-v2.jpg", "Logo project", 3200, 5233]],
+    images: [["./assets/optimized/brand-project-logo-01-logo-v2-fast.webp", "Logo project", 2400, 3925]],
   },
   lkk: {
     title: "LKK",
-    images: [["./assets/brand-projects/lkk/01-lkk.webp", "LKK project", 3200, 5908]],
+    images: [["./assets/optimized/brand-project-lkk-01-lkk-fast.webp", "LKK project", 2400, 4431]],
   },
 };
 
@@ -35,55 +35,33 @@ const requestedProject = new URLSearchParams(window.location.search).get("projec
 const projectKey = projects[requestedProject] ? requestedProject : "bingo";
 const project = projects[projectKey];
 const gallery = document.querySelector(".project-gallery");
-const projectOrder = ["bingo", "stillwood", "logo", "lkk"];
-
 document.title = `${project.title} / Rolin Portfolio`;
 gallery.setAttribute("aria-label", "Brand and packaging project images");
 
-projectOrder.forEach((key) => {
-  const currentProject = projects[key];
-  const section = document.createElement("section");
-  section.className = "project-section";
-  section.id = key;
-  section.setAttribute("aria-label", currentProject.title);
+const section = document.createElement("section");
+section.className = "project-section";
+section.id = projectKey;
+section.setAttribute("aria-label", project.title);
 
-  currentProject.images.forEach(([src, alt, width, height], imageIndex) => {
-    const frame = document.createElement("figure");
-    frame.className = "project-frame";
+project.images.forEach(([src, alt, width, height], imageIndex) => {
+  const frame = document.createElement("figure");
+  frame.className = "project-frame";
+  frame.style.aspectRatio = `${width} / ${height}`;
 
-    const image = document.createElement("img");
-    image.src = src;
-    image.alt = alt;
-    image.width = width;
-    image.height = height;
-    image.decoding = "async";
-    image.loading = key === projectKey && imageIndex === 0 ? "eager" : "lazy";
-    if (key === projectKey && imageIndex === 0) image.fetchPriority = "high";
+  const image = document.createElement("img");
+  image.src = src;
+  image.alt = alt;
+  image.width = width;
+  image.height = height;
+  image.decoding = "async";
+  image.loading = imageIndex === 0 ? "eager" : "lazy";
+  image.fetchPriority = imageIndex === 0 ? "high" : "low";
 
-    frame.append(image);
-    section.append(frame);
-  });
-
-  if (key === "bingo") {
-    const marketAnalysis = section.querySelector(
-      'img[src="./assets/brand-projects/bingo/07-market-analysis.webp"]',
-    );
-    if (marketAnalysis) {
-      const originalFrame = marketAnalysis.parentElement;
-      section.insertBefore(marketAnalysis, section.children[1] || null);
-      originalFrame.remove();
-    }
-  }
-
-  gallery.append(section);
+  frame.append(image);
+  section.append(frame);
 });
 
-const targetSection = document.getElementById(projectKey);
-if (projectKey !== "bingo") {
-  const moveToProject = () => window.scrollTo(0, targetSection.offsetTop);
-  requestAnimationFrame(moveToProject);
-  window.addEventListener("load", moveToProject, { once: true });
-}
+gallery.append(section);
 
 const nextLink = document.querySelector(".project-next");
 const transition = document.querySelector(".project-transition");

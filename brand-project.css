@@ -75,6 +75,8 @@ body {
   overflow: hidden;
   background: var(--paper);
   scroll-snap-align: start;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100svh;
 }
 
 .project-frame img {

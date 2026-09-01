@@ -321,7 +321,7 @@ const categories = {
         focus: "Illustration / HAY / Art Direction",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hay/01-form-plus-grace.webp",
+        src: "./assets/optimized/illustration-hay-01-form-plus-grace-fast.webp",
         alt: "Form Plus Grace illustration for HAY",
         className: "media-figure--illustration",
       },
@@ -332,7 +332,7 @@ const categories = {
         focus: "Narrative / Interior / Illustration",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hay/02-live-in-art.webp",
+        src: "./assets/optimized/illustration-hay-02-live-in-art-fast.webp",
         alt: "Live In Art illustrated interior",
         className: "media-figure--illustration",
       },
@@ -343,7 +343,7 @@ const categories = {
         focus: "Objects / Product / Composition",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hay/03-object-story.webp",
+        src: "./assets/optimized/illustration-hay-03-object-story-fast.webp",
         alt: "HAY object story illustration",
         className: "media-figure--illustration",
       },
@@ -354,7 +354,7 @@ const categories = {
         focus: "Brand World / Color / Illustration",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hay/04-brand-background.webp",
+        src: "./assets/optimized/illustration-hay-04-brand-background-fast.webp",
         alt: "HAY brand background illustration",
         className: "media-figure--illustration",
       },
@@ -365,7 +365,7 @@ const categories = {
         focus: "Consumer / Interior / Campaign",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hay/05-consumer-group.webp",
+        src: "./assets/optimized/illustration-hay-05-consumer-group-fast.webp",
         alt: "HAY consumer group visual",
         className: "media-figure--illustration",
       },
@@ -376,7 +376,7 @@ const categories = {
         focus: "Lifestyle / Photography / Illustration",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hay/06-living-with-hay.webp",
+        src: "./assets/optimized/illustration-hay-06-living-with-hay-fast.webp",
         alt: "Living With HAY campaign composition",
         className: "media-figure--illustration",
       },
@@ -387,7 +387,7 @@ const categories = {
         focus: "Illustration / Character / Identity",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-catffee/01-hero.webp",
+        src: "./assets/optimized/illustration-catffee-01-hero-fast.webp",
         alt: "Catffee outdoor character illustration",
         className: "media-figure--illustration",
         project: "catffee",
@@ -411,7 +411,7 @@ const categories = {
         focus: "System / Application / Illustration",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-catffee/03-system-a.webp",
+        src: "./assets/optimized/illustration-catffee-03-system-a-fast.webp",
         alt: "Catffee visual system board one",
         className: "media-figure--illustration media-figure--vertical-board",
         project: "catffee",
@@ -423,7 +423,7 @@ const categories = {
         focus: "System / Environment / Extension",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-catffee/04-system-b.webp",
+        src: "./assets/optimized/illustration-catffee-04-system-b-fast.webp",
         alt: "Catffee visual system board two",
         className: "media-figure--illustration media-figure--vertical-board",
         project: "catffee",
@@ -435,7 +435,7 @@ const categories = {
         focus: "Illustration / Identity / Character",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-bondir/01-intro.webp",
+        src: "./assets/optimized/illustration-bondir-01-intro-fast.webp",
         alt: "Bondir Salon illustrated introduction",
         className: "media-figure--illustration",
         project: "bondir",
@@ -447,7 +447,7 @@ const categories = {
         focus: "Character / Fashion / Illustration",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-bondir/02-characters.webp",
+        src: "./assets/optimized/illustration-bondir-02-characters-fast.webp",
         alt: "Bondir character group illustration",
         className: "media-figure--illustration",
         project: "bondir",
@@ -459,7 +459,7 @@ const categories = {
         focus: "Scene / Narrative / Composition",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-bondir/03-scene.webp",
+        src: "./assets/optimized/illustration-bondir-03-scene-fast.webp",
         alt: "Bondir illustrated character scene",
         className: "media-figure--illustration",
         project: "bondir",
@@ -471,7 +471,7 @@ const categories = {
         focus: "Application / Environment / Identity",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-bondir/04-application.webp",
+        src: "./assets/optimized/illustration-bondir-04-application-fast.webp",
         alt: "Bondir château campaign application",
         className: "media-figure--illustration",
         project: "bondir",
@@ -689,20 +689,20 @@ const categories = {
 };
 
 const mediaDimensions = {
-  "./assets/illustration-hay/01-form-plus-grace.webp": [3840, 2160],
-  "./assets/illustration-hay/02-live-in-art.webp": [3840, 2160],
-  "./assets/illustration-hay/03-object-story.webp": [3840, 2160],
-  "./assets/illustration-hay/04-brand-background.webp": [3840, 2656],
-  "./assets/illustration-hay/05-consumer-group.webp": [3840, 2246],
-  "./assets/illustration-hay/06-living-with-hay.webp": [3840, 2188],
-  "./assets/illustration-catffee/01-hero.webp": [3840, 2160],
+  "./assets/optimized/illustration-hay-01-form-plus-grace-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-hay-02-live-in-art-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-hay-03-object-story-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-hay-04-brand-background-fast.webp": [2400, 1660],
+  "./assets/optimized/illustration-hay-05-consumer-group-fast.webp": [2400, 1404],
+  "./assets/optimized/illustration-hay-06-living-with-hay-fast.webp": [2400, 1368],
+  "./assets/optimized/illustration-catffee-01-hero-fast.webp": [2400, 1350],
   "./assets/optimized/catffee-posters.webp": [1600, 1752],
-  "./assets/illustration-catffee/03-system-a.webp": [2395, 4000],
-  "./assets/illustration-catffee/04-system-b.webp": [1941, 4000],
-  "./assets/illustration-bondir/01-intro.webp": [3840, 2160],
-  "./assets/illustration-bondir/02-characters.webp": [3840, 2160],
-  "./assets/illustration-bondir/03-scene.webp": [3840, 2160],
-  "./assets/illustration-bondir/04-application.webp": [3840, 2160],
+  "./assets/optimized/illustration-catffee-03-system-a-fast.webp": [1437, 2400],
+  "./assets/optimized/illustration-catffee-04-system-b-fast.webp": [1165, 2400],
+  "./assets/optimized/illustration-bondir-01-intro-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-bondir-02-characters-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-bondir-03-scene-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-bondir-04-application-fast.webp": [2400, 1350],
   "./assets/illustration-bondir/05-slideshow.mp4": [1920, 1080],
   "./assets/optimized/illustration-hermes-motion-fast.mp4": [1280, 720],
   "./assets/optimized/illustration-hermes-scarf-fast.webp": [2399, 2400],
@@ -980,10 +980,10 @@ function renderBrandDirectory() {
       slug: "bingo",
       field: "Pet care / Outdoor culture",
       service: "Identity / Packaging / Illustration",
-      image: "./assets/brand-index/01-bingo.webp",
+      image: "./assets/optimized/brand-preview-01-bingo.webp",
       alt: "BinGo pet care packaging",
-      width: 2254,
-      height: 3000,
+      width: 800,
+      height: 1065,
       note: "A pet-friendly outdoor brand for shared rituals, light sport and time beyond the screen.",
     },
     {
@@ -991,10 +991,10 @@ function renderBrandDirectory() {
       slug: "stillwood",
       field: "Natural fragrance / Gifting",
       service: "Strategy / Naming / Packaging",
-      image: "./assets/brand-index/02-still-wood.webp",
+      image: "./assets/optimized/brand-preview-02-still-wood.webp",
       alt: "Still Wood fragrance packaging",
-      width: 3000,
-      height: 1674,
+      width: 800,
+      height: 447,
       note: "A quiet fragrance identity shaped by wood, memory and the tactile language of natural gifts.",
     },
     {
@@ -1002,10 +1002,10 @@ function renderBrandDirectory() {
       slug: "logo",
       field: "Logo / Visual identity",
       service: "Symbol / Lettering / System",
-      image: "./assets/brand-index/03-shiye-type.webp",
+      image: "./assets/optimized/brand-preview-03-shiye-type.webp",
       alt: "Experimental Chinese typography",
-      width: 2250,
-      height: 3000,
+      width: 800,
+      height: 1067,
       note: "Experimental Chinese characters are rebuilt as expressive marks between language and image.",
     },
     {
@@ -1013,10 +1013,10 @@ function renderBrandDirectory() {
       slug: "lkk",
       field: "Food / Lifestyle",
       service: "Packaging / Key visual / Art direction",
-      image: "./assets/brand-index/04-sanquan.webp",
+      image: "./assets/optimized/brand-preview-04-sanquan.webp",
       alt: "Sanquan steamed bun packaging",
-      width: 3000,
-      height: 1687,
+      width: 800,
+      height: 450,
       note: "Familiar food is reframed through a lighter, playful package system for everyday shelves.",
     },
   ];
@@ -1161,12 +1161,21 @@ function renderBrandDirectory() {
     });
   });
 
+  let cursorFrame = 0;
+  let cursorX = 0;
+  let cursorY = 0;
   directory.addEventListener("pointermove", (event) => {
     const isOverImage = Boolean(event.target.closest?.(".brand-directory__track a"));
     exploreCursor.classList.toggle("is-visible", isOverImage);
     if (!isOverImage) return;
-    exploreCursor.style.left = `${event.clientX}px`;
-    exploreCursor.style.top = `${event.clientY}px`;
+    cursorX = event.clientX;
+    cursorY = event.clientY;
+    if (cursorFrame) return;
+    cursorFrame = requestAnimationFrame(() => {
+      cursorFrame = 0;
+      exploreCursor.style.setProperty("--cursor-x", `${cursorX}px`);
+      exploreCursor.style.setProperty("--cursor-y", `${cursorY}px`);
+    });
   });
 
   directory.addEventListener("pointerleave", () => {
@@ -1588,6 +1597,16 @@ function updateAside(index, immediate = false) {
 }
 
 const figures = [...document.querySelectorAll(".media-figure")];
+let illustrationFigureCenters = [];
+
+function measureIllustrationFigures() {
+  if (!illustrationSplit) return;
+  illustrationFigureCenters = figures.map(
+    (figure) => figure.offsetTop + figure.offsetHeight * 0.5,
+  );
+}
+
+measureIllustrationFigures();
 const deferredVideoObserver = new IntersectionObserver(
   (entries, currentObserver) => {
     entries.forEach((entry) => {
@@ -1655,16 +1674,27 @@ function renderScroll() {
   let closestIndex = 0;
   let closestDistance = Number.POSITIVE_INFINITY;
 
-  figures.forEach((figure, index) => {
-    const rect = figure.getBoundingClientRect();
-    const figureCenter = rect.top + rect.height * 0.5;
-    const distance = Math.abs(figureCenter - center);
-    figure.classList.toggle("is-active", distance < viewportHeight * 0.42);
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestIndex = index;
-    }
-  });
+  if (illustrationSplit) {
+    const absoluteCenter = stream.scrollTop + center;
+    illustrationFigureCenters.forEach((figureCenter, index) => {
+      const distance = Math.abs(figureCenter - absoluteCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+  } else {
+    figures.forEach((figure, index) => {
+      const rect = figure.getBoundingClientRect();
+      const figureCenter = rect.top + rect.height * 0.5;
+      const distance = Math.abs(figureCenter - center);
+      figure.classList.toggle("is-active", distance < viewportHeight * 0.42);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+  }
 
   updateAside(closestIndex);
   const scrollRange =
@@ -1691,4 +1721,7 @@ renderScroll();
 (illustrationSplit ? stream : window).addEventListener("scroll", scheduleRenderScroll, {
   passive: true,
 });
-window.addEventListener("resize", scheduleRenderScroll);
+window.addEventListener("resize", () => {
+  measureIllustrationFigures();
+  scheduleRenderScroll();
+});

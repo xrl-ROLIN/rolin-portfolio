@@ -1366,6 +1366,8 @@ body {
 }
 
 .brand-directory__explore-cursor {
+  --cursor-x: -120px;
+  --cursor-y: -120px;
   position: fixed;
   z-index: 100;
   left: 0;
@@ -1373,16 +1375,16 @@ body {
   width: clamp(56px, 5.2vw, 84px);
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -50%) scale(0.76);
+  transform: translate3d(var(--cursor-x), var(--cursor-y), 0) translate(-50%, -50%) scale(0.76);
   transition:
     opacity 160ms ease,
     transform 420ms var(--ease);
-  will-change: left, top, transform, opacity;
+  will-change: transform, opacity;
 }
 
 .brand-directory__explore-cursor.is-visible {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate3d(var(--cursor-x), var(--cursor-y), 0) translate(-50%, -50%) scale(1);
 }
 
 .brand-directory__explore-cursor img {
