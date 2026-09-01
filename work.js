@@ -494,7 +494,7 @@ const categories = {
         focus: "Textile / Motion / Illustration",
         year: "2026",
         type: "video",
-        src: "./assets/illustration-hermes/01-scarf-motion.mp4",
+        src: "./assets/optimized/illustration-hermes-motion-fast.mp4",
         className: "media-figure--illustration",
         project: "hermes",
       },
@@ -505,7 +505,7 @@ const categories = {
         focus: "Scarf / Illustration / Art Direction",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hermes/02-scarf-artwork.webp",
+        src: "./assets/optimized/illustration-hermes-scarf-fast.webp",
         alt: "Hermès Gift Me a Dream scarf illustration",
         className: "media-figure--illustration media-figure--square",
         project: "hermes",
@@ -517,7 +517,7 @@ const categories = {
         focus: "Application / Editorial / Environment",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-hermes/03-application.webp",
+        src: "./assets/optimized/illustration-hermes-application-fast.webp",
         alt: "Hermès scarf editorial application",
         className: "media-figure--illustration",
         project: "hermes",
@@ -529,7 +529,7 @@ const categories = {
         focus: "Illustration / Outdoor / Narrative",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-sisyphe/01-outdoor.webp",
+        src: "./assets/optimized/illustration-sisyphe-outdoor-fast.webp",
         alt: "SISYPHE Secret Garden outdoor illustration",
         className: "media-figure--illustration",
         project: "sisyphe",
@@ -541,7 +541,7 @@ const categories = {
         focus: "Key Visual / Story / Illustration",
         year: "2026",
         type: "image",
-        src: "./assets/illustration-sisyphe/02-secret-garden.webp",
+        src: "./assets/optimized/illustration-sisyphe-garden-fast.webp",
         alt: "SISYPHE Secret Garden key visual",
         className: "media-figure--illustration",
         project: "sisyphe",
@@ -553,7 +553,7 @@ const categories = {
         focus: "Campaign / City Pop / Illustration",
         year: "2025",
         type: "image",
-        src: "./assets/illustration-lipton/01-city-pop.webp?v=2",
+        src: "./assets/optimized/illustration-lipton-city-fast.webp?v=1",
         alt: "Lipton City Pop campaign illustration",
         className: "media-figure--illustration",
         project: "lipton",
@@ -565,7 +565,7 @@ const categories = {
         focus: "Line Work / Packaging / Extension",
         year: "2025",
         type: "image",
-        src: "./assets/illustration-lipton/02-system.webp",
+        src: "./assets/optimized/illustration-lipton-system-fast.webp",
         alt: "Lipton City Pop illustration system",
         className: "media-figure--illustration media-figure--vertical-board",
         project: "lipton",
@@ -687,6 +687,35 @@ const categories = {
     ],
   },
 };
+
+const mediaDimensions = {
+  "./assets/illustration-hay/01-form-plus-grace.webp": [3840, 2160],
+  "./assets/illustration-hay/02-live-in-art.webp": [3840, 2160],
+  "./assets/illustration-hay/03-object-story.webp": [3840, 2160],
+  "./assets/illustration-hay/04-brand-background.webp": [3840, 2656],
+  "./assets/illustration-hay/05-consumer-group.webp": [3840, 2246],
+  "./assets/illustration-hay/06-living-with-hay.webp": [3840, 2188],
+  "./assets/illustration-catffee/01-hero.webp": [3840, 2160],
+  "./assets/optimized/catffee-posters.webp": [1600, 1752],
+  "./assets/illustration-catffee/03-system-a.webp": [2395, 4000],
+  "./assets/illustration-catffee/04-system-b.webp": [1941, 4000],
+  "./assets/illustration-bondir/01-intro.webp": [3840, 2160],
+  "./assets/illustration-bondir/02-characters.webp": [3840, 2160],
+  "./assets/illustration-bondir/03-scene.webp": [3840, 2160],
+  "./assets/illustration-bondir/04-application.webp": [3840, 2160],
+  "./assets/illustration-bondir/05-slideshow.mp4": [1920, 1080],
+  "./assets/optimized/illustration-hermes-motion-fast.mp4": [1280, 720],
+  "./assets/optimized/illustration-hermes-scarf-fast.webp": [2399, 2400],
+  "./assets/optimized/illustration-hermes-application-fast.webp": [2400, 1781],
+  "./assets/optimized/illustration-sisyphe-outdoor-fast.webp": [2400, 1475],
+  "./assets/optimized/illustration-sisyphe-garden-fast.webp": [2400, 1350],
+  "./assets/optimized/illustration-lipton-city-fast.webp": [2400, 1288],
+  "./assets/optimized/illustration-lipton-system-fast.webp": [2164, 2400],
+};
+
+function getMediaDimensions(source) {
+  return mediaDimensions[source?.split("?")[0]];
+}
 
 const moySharedInfo = {
   title: "MOY- Community Fest",
@@ -885,6 +914,10 @@ function createMedia(section, index) {
   figure.dataset.index = String(index);
   figure.dataset.number = String(index + 1).padStart(2, "0");
   if (section.crop) figure.dataset.crop = section.crop;
+  const dimensions = section.type === "video-pair" ? null : getMediaDimensions(section.src);
+  if (dimensions) {
+    figure.style.aspectRatio = `${dimensions[0]} / ${dimensions[1]}`;
+  }
 
   let media;
   if (section.type === "video-pair") {
@@ -898,6 +931,11 @@ function createMedia(section, index) {
       video.playsInline = true;
       video.preload = "none";
       video.dataset.src = source;
+      const sourceDimensions = getMediaDimensions(source);
+      if (sourceDimensions) {
+        video.width = sourceDimensions[0];
+        video.height = sourceDimensions[1];
+      }
       video.setAttribute("aria-label", `${section.title} ${sourceIndex + 1}`);
       media.append(video);
     });
@@ -913,6 +951,10 @@ function createMedia(section, index) {
     } else {
       media.dataset.src = section.src;
     }
+    if (dimensions) {
+      media.width = dimensions[0];
+      media.height = dimensions[1];
+    }
     media.setAttribute("aria-label", section.title);
   } else {
     media = document.createElement("img");
@@ -921,6 +963,10 @@ function createMedia(section, index) {
     media.decoding = "async";
     media.loading = index === 0 ? "eager" : "lazy";
     media.fetchPriority = index === 0 ? "high" : "low";
+    if (dimensions) {
+      media.width = dimensions[0];
+      media.height = dimensions[1];
+    }
   }
 
   figure.append(media);
