@@ -1485,7 +1485,7 @@ let nextTransitionStarted = false;
 
 if (categoryKey === "illustration") {
   nextTransition.classList.add("is-brand-packaging");
-  nextTransitionVideo.src = "./assets/transitions/brand-packaging-v11.mp4?v=1";
+  nextTransitionVideo.src = "./assets/transitions/brand-packaging-v12.mp4?v=1";
   nextTransitionLabel.textContent = "";
   nextTransitionLabel.hidden = true;
 } else if (categoryKey === "brand") {
