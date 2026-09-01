@@ -1629,10 +1629,19 @@ body.is-next-transition .next-section-transition__video {
   background: #000;
   filter: grayscale(1);
   mix-blend-mode: normal;
+  clip-path: inset(0);
+  transition: opacity 160ms ease, visibility 0s 160ms;
 }
 
 .next-section-transition.is-brand-packaging .next-section-transition__video {
   background: #000;
+  object-fit: cover;
+  object-position: center;
+}
+
+body.is-next-transition .next-section-transition.is-brand-packaging {
+  clip-path: inset(0);
+  transition: opacity 160ms ease, visibility 0s;
 }
 
 body.is-next-transition
