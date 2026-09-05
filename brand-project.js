@@ -75,9 +75,10 @@ const entrySection = renderedSections.find(
   (section) => section.dataset.project === projectKey,
 );
 let initialPositionComplete = false;
+let userHasScrolled = false;
 
 function positionEntryProject() {
-  if (!entrySection) return;
+  if (!entrySection || userHasScrolled) return;
   const root = document.documentElement;
   const previousBehavior = root.style.scrollBehavior;
   root.style.scrollBehavior = "auto";
@@ -90,8 +91,33 @@ requestAnimationFrame(() => {
   positionEntryProject();
   requestAnimationFrame(() => {
     positionEntryProject();
-    initialPositionComplete = true;
   });
+});
+
+function finalizeEntryPosition() {
+  positionEntryProject();
+  initialPositionComplete = true;
+}
+
+window.addEventListener("load", finalizeEntryPosition, { once: true });
+window.addEventListener(
+  "pageshow",
+  () => {
+    requestAnimationFrame(finalizeEntryPosition);
+  },
+  { once: true },
+);
+window.setTimeout(finalizeEntryPosition, 700);
+
+["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
+  window.addEventListener(
+    eventName,
+    () => {
+      userHasScrolled = true;
+      initialPositionComplete = true;
+    },
+    { once: true, passive: true },
+  );
 });
 
 const activeProjectObserver = new IntersectionObserver(
