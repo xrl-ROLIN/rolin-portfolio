@@ -1067,7 +1067,7 @@ function renderBrandDirectory() {
                   ${item.cycle === 1 ? "" : 'aria-hidden="true"'}
                 >
                   <a
-                    href="./brand-project.html?project=${item.slug}"
+                    href="./brand-project.html?project=${item.slug}&intro=1"
                     aria-label="Open ${item.title} project"
                     ${item.cycle === 1 ? "" : 'tabindex="-1"'}
                   >

@@ -31,9 +31,15 @@ const projects = {
   },
 };
 
-const requestedProject = new URLSearchParams(window.location.search).get("project");
+const pageParams = new URLSearchParams(window.location.search);
+const requestedProject = pageParams.get("project");
 const projectKey = projects[requestedProject] ? requestedProject : "bingo";
 const projectOrder = ["bingo", "stillwood", "logo", "lkk"];
+const entryProjectIndex = projectOrder.indexOf(projectKey);
+const shouldPlayEntryTour =
+  pageParams.get("intro") === "1" &&
+  entryProjectIndex > 0 &&
+  !matchMedia("(prefers-reduced-motion: reduce)").matches;
 const gallery = document.querySelector(".project-gallery");
 document.title = `${projects[projectKey].title} / Rolin Portfolio`;
 gallery.setAttribute("aria-label", "Brand and packaging project images");
@@ -55,13 +61,17 @@ const renderedSections = projectOrder.map((currentProjectKey) => {
 
     const image = document.createElement("img");
     const isEntryImage = currentProjectKey === projectKey && imageIndex === 0;
+    const isTourImage =
+      shouldPlayEntryTour &&
+      projectOrder.indexOf(currentProjectKey) <= entryProjectIndex;
     image.src = src;
     image.alt = alt;
     image.width = width;
     image.height = height;
     image.decoding = "async";
-    image.loading = isEntryImage ? "eager" : "lazy";
-    image.fetchPriority = isEntryImage ? "high" : "low";
+    image.loading = isEntryImage || isTourImage ? "eager" : "lazy";
+    image.fetchPriority =
+      isEntryImage || (isTourImage && imageIndex === 0) ? "high" : "low";
 
     frame.append(image);
     section.append(frame);
@@ -76,6 +86,11 @@ const entrySection = renderedSections.find(
 );
 let initialPositionComplete = false;
 let userHasScrolled = false;
+let entryTourStarted = false;
+let entryTourActive = false;
+let entryTourFrame = 0;
+let entryTourTimer = 0;
+let previousRootScrollBehavior = "";
 
 function positionEntryProject() {
   if (!entrySection || userHasScrolled) return;
@@ -86,39 +101,149 @@ function positionEntryProject() {
   root.style.scrollBehavior = previousBehavior;
 }
 
-positionEntryProject();
-requestAnimationFrame(() => {
-  positionEntryProject();
-  requestAnimationFrame(() => {
-    positionEntryProject();
-  });
-});
+function updateActiveProject(projectName, removeIntro = false) {
+  const activeProject = projects[projectName];
+  document.title = `${activeProject.title} / Rolin Portfolio`;
+  const activeUrl = new URL(window.location.href);
+  activeUrl.searchParams.set("project", projectName);
+  if (removeIntro) activeUrl.searchParams.delete("intro");
+  history.replaceState(null, "", activeUrl);
+}
 
 function finalizeEntryPosition() {
   positionEntryProject();
   initialPositionComplete = true;
 }
 
-window.addEventListener("load", finalizeEntryPosition, { once: true });
-window.addEventListener(
-  "pageshow",
-  () => {
-    requestAnimationFrame(finalizeEntryPosition);
-  },
-  { once: true },
-);
-window.setTimeout(finalizeEntryPosition, 700);
+function setTourScroll(top) {
+  document.scrollingElement.scrollTop = top;
+}
 
-["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
-  window.addEventListener(
-    eventName,
-    () => {
-      userHasScrolled = true;
-      initialPositionComplete = true;
-    },
-    { once: true, passive: true },
+function finishEntryTour() {
+  if (!entryTourActive && !entryTourStarted) return;
+  entryTourActive = false;
+  cancelAnimationFrame(entryTourFrame);
+  window.clearTimeout(entryTourTimer);
+  setTourScroll(entrySection.offsetTop);
+  document.documentElement.style.scrollBehavior = previousRootScrollBehavior;
+  document.body.classList.remove("is-entry-tour");
+  initialPositionComplete = true;
+  updateActiveProject(projectKey, true);
+  window.removeEventListener("wheel", finishEntryTour);
+  window.removeEventListener("touchstart", finishEntryTour);
+  window.removeEventListener("pointerdown", finishEntryTour);
+  window.removeEventListener("keydown", finishEntryTour);
+}
+
+function animateTourSegment(targetTop, duration, onComplete) {
+  const startTop = document.scrollingElement.scrollTop;
+  const distance = targetTop - startTop;
+  const startedAt = performance.now();
+
+  const renderFrame = (now) => {
+    if (!entryTourActive) return;
+    const progress = Math.min(1, (now - startedAt) / duration);
+    const eased =
+      progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    setTourScroll(startTop + distance * eased);
+    if (progress < 1) {
+      entryTourFrame = requestAnimationFrame(renderFrame);
+    } else {
+      onComplete();
+    }
+  };
+
+  entryTourFrame = requestAnimationFrame(renderFrame);
+}
+
+function startEntryTour() {
+  if (entryTourStarted) return;
+  entryTourStarted = true;
+  entryTourActive = true;
+  previousRootScrollBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = "auto";
+  document.body.classList.add("is-entry-tour");
+  setTourScroll(0);
+
+  ["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
+    window.addEventListener(eventName, finishEntryTour, {
+      passive: true,
+    });
+  });
+
+  const stops = renderedSections
+    .slice(1, entryProjectIndex + 1)
+    .map((section) => section.offsetTop);
+  const totalDuration = entryProjectIndex === 1 ? 1700 : entryProjectIndex === 2 ? 2600 : 3000;
+  const openingHold = 260;
+  const pagePause = 110;
+  const segmentDuration =
+    (totalDuration - openingHold - pagePause * (stops.length - 1)) /
+    stops.length;
+  let stopIndex = 0;
+
+  const playNextSegment = () => {
+    animateTourSegment(stops[stopIndex], segmentDuration, () => {
+      stopIndex += 1;
+      if (stopIndex >= stops.length) {
+        finishEntryTour();
+        return;
+      }
+      entryTourTimer = window.setTimeout(playNextSegment, pagePause);
+    });
+  };
+
+  entryTourTimer = window.setTimeout(playNextSegment, openingHold);
+}
+
+if (shouldPlayEntryTour) {
+  setTourScroll(0);
+  const tourImages = [
+    ...gallery.querySelectorAll(
+      projectOrder
+        .slice(0, entryProjectIndex + 1)
+        .map((key) => `#${key} img`)
+        .join(","),
+    ),
+  ];
+  const decoded = Promise.allSettled(
+    tourImages.map((image) =>
+      image.decode ? image.decode().catch(() => {}) : Promise.resolve(),
+    ),
   );
-});
+  Promise.race([
+    decoded,
+    new Promise((resolve) => window.setTimeout(resolve, 1100)),
+  ]).then(startEntryTour);
+} else {
+  positionEntryProject();
+  requestAnimationFrame(() => {
+    positionEntryProject();
+    requestAnimationFrame(positionEntryProject);
+  });
+  window.addEventListener("load", finalizeEntryPosition, { once: true });
+  window.addEventListener(
+    "pageshow",
+    () => {
+      requestAnimationFrame(finalizeEntryPosition);
+    },
+    { once: true },
+  );
+  window.setTimeout(finalizeEntryPosition, 700);
+
+  ["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
+    window.addEventListener(
+      eventName,
+      () => {
+        userHasScrolled = true;
+        initialPositionComplete = true;
+      },
+      { once: true, passive: true },
+    );
+  });
+}
 
 const activeProjectObserver = new IntersectionObserver(
   (entries) => {
@@ -126,11 +251,7 @@ const activeProjectObserver = new IntersectionObserver(
     const activeEntry = entries.find((entry) => entry.isIntersecting);
     if (!activeEntry) return;
     const activeKey = activeEntry.target.dataset.project;
-    const activeProject = projects[activeKey];
-    document.title = `${activeProject.title} / Rolin Portfolio`;
-    const activeUrl = new URL(window.location.href);
-    activeUrl.searchParams.set("project", activeKey);
-    history.replaceState(null, "", activeUrl);
+    updateActiveProject(activeKey);
   },
   {
     rootMargin: "-46% 0px -46%",
