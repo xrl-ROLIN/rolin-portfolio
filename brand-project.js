@@ -33,35 +33,86 @@ const projects = {
 
 const requestedProject = new URLSearchParams(window.location.search).get("project");
 const projectKey = projects[requestedProject] ? requestedProject : "bingo";
-const project = projects[projectKey];
+const projectOrder = ["bingo", "stillwood", "logo", "lkk"];
 const gallery = document.querySelector(".project-gallery");
-document.title = `${project.title} / Rolin Portfolio`;
+document.title = `${projects[projectKey].title} / Rolin Portfolio`;
 gallery.setAttribute("aria-label", "Brand and packaging project images");
+history.scrollRestoration = "manual";
 
-const section = document.createElement("section");
-section.className = "project-section";
-section.id = projectKey;
-section.setAttribute("aria-label", project.title);
+const renderedSections = projectOrder.map((currentProjectKey) => {
+  const currentProject = projects[currentProjectKey];
+  const section = document.createElement("section");
+  section.className = "project-section";
+  section.classList.toggle("is-entry", currentProjectKey === projectKey);
+  section.id = currentProjectKey;
+  section.dataset.project = currentProjectKey;
+  section.setAttribute("aria-label", currentProject.title);
 
-project.images.forEach(([src, alt, width, height], imageIndex) => {
-  const frame = document.createElement("figure");
-  frame.className = "project-frame";
-  frame.style.aspectRatio = `${width} / ${height}`;
+  currentProject.images.forEach(([src, alt, width, height], imageIndex) => {
+    const frame = document.createElement("figure");
+    frame.className = "project-frame";
+    frame.style.aspectRatio = `${width} / ${height}`;
 
-  const image = document.createElement("img");
-  image.src = src;
-  image.alt = alt;
-  image.width = width;
-  image.height = height;
-  image.decoding = "async";
-  image.loading = imageIndex === 0 ? "eager" : "lazy";
-  image.fetchPriority = imageIndex === 0 ? "high" : "low";
+    const image = document.createElement("img");
+    const isEntryImage = currentProjectKey === projectKey && imageIndex === 0;
+    image.src = src;
+    image.alt = alt;
+    image.width = width;
+    image.height = height;
+    image.decoding = "async";
+    image.loading = isEntryImage ? "eager" : "lazy";
+    image.fetchPriority = isEntryImage ? "high" : "low";
 
-  frame.append(image);
-  section.append(frame);
+    frame.append(image);
+    section.append(frame);
+  });
+
+  gallery.append(section);
+  return section;
 });
 
-gallery.append(section);
+const entrySection = renderedSections.find(
+  (section) => section.dataset.project === projectKey,
+);
+let initialPositionComplete = false;
+
+function positionEntryProject() {
+  if (!entrySection) return;
+  const root = document.documentElement;
+  const previousBehavior = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  document.scrollingElement.scrollTop = entrySection.offsetTop;
+  root.style.scrollBehavior = previousBehavior;
+}
+
+positionEntryProject();
+requestAnimationFrame(() => {
+  positionEntryProject();
+  requestAnimationFrame(() => {
+    positionEntryProject();
+    initialPositionComplete = true;
+  });
+});
+
+const activeProjectObserver = new IntersectionObserver(
+  (entries) => {
+    if (!initialPositionComplete) return;
+    const activeEntry = entries.find((entry) => entry.isIntersecting);
+    if (!activeEntry) return;
+    const activeKey = activeEntry.target.dataset.project;
+    const activeProject = projects[activeKey];
+    document.title = `${activeProject.title} / Rolin Portfolio`;
+    const activeUrl = new URL(window.location.href);
+    activeUrl.searchParams.set("project", activeKey);
+    history.replaceState(null, "", activeUrl);
+  },
+  {
+    rootMargin: "-46% 0px -46%",
+    threshold: 0,
+  },
+);
+
+renderedSections.forEach((section) => activeProjectObserver.observe(section));
 
 const nextLink = document.querySelector(".project-next");
 const transition = document.querySelector(".project-transition");

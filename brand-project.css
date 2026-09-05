@@ -10,7 +10,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
+  scroll-snap-type: none;
   background: var(--paper);
 }
 
@@ -96,7 +96,7 @@ body {
   scroll-snap-align: start;
 }
 
-.project-frame:first-child img {
+.project-section.is-entry .project-frame:first-child img {
   animation: image-in 900ms var(--ease) both;
 }
 
@@ -236,7 +236,7 @@ body.is-project-transition .project-transition video {
     scroll-behavior: auto;
   }
 
-  .project-frame:first-child img {
+  .project-section.is-entry .project-frame:first-child img {
     animation: none;
   }
 
