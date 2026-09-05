@@ -1240,7 +1240,7 @@ body {
   padding: 0;
   list-style: none;
   transform: translateY(-4.5px);
-  transition: transform 720ms var(--ease);
+  transition: transform 360ms var(--ease);
 }
 
 .brand-directory__stage[data-brand-active="1"] .brand-directory__list {
@@ -1324,7 +1324,7 @@ body {
   top: 50%;
   width: var(--preview-width);
   transform: translate(-50%, var(--brand-track-y, -50%));
-  transition: transform 720ms var(--ease);
+  transition: transform 360ms var(--ease);
   will-change: transform;
 }
 
@@ -1339,8 +1339,7 @@ body {
   overflow: visible;
   background: transparent;
   opacity: 1;
-  transition:
-    transform 620ms var(--ease);
+  transition: transform 300ms var(--ease);
 }
 
 .brand-directory__track figure.is-active {
@@ -2188,6 +2187,7 @@ body.is-aigc-page {
     #050505;
   color: #f7f7f3;
   isolation: isolate;
+  contain: layout paint style;
 }
 
 .aigc-stage::after {
@@ -2275,11 +2275,12 @@ body.is-aigc-page {
   transform-origin: center;
   animation: aigc-counter-orbit 72s linear infinite;
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 .aigc-card__media {
-  transition: transform 900ms var(--ease);
-  will-change: transform;
+  contain: layout paint;
+  transition: transform 260ms var(--ease);
 }
 
 .aigc-card img {
@@ -2287,16 +2288,16 @@ body.is-aigc-page {
   width: 100%;
   height: auto;
   border-radius: 1px;
-  filter: grayscale(0) saturate(1);
+  opacity: 1;
   transform: rotate(var(--r)) scale(1);
   transition:
-    filter 520ms var(--ease),
-    transform 620ms var(--ease);
-  will-change: filter, transform;
+    opacity 180ms ease,
+    transform 320ms var(--ease);
+  backface-visibility: hidden;
 }
 
 .aigc-stage.has-hover .aigc-card:not(.is-hovered) img {
-  filter: grayscale(1) saturate(0);
+  opacity: 0.38;
 }
 
 .aigc-card.is-hovered {
@@ -2304,8 +2305,8 @@ body.is-aigc-page {
 }
 
 .aigc-card.is-hovered img {
-  filter: grayscale(0) saturate(1);
-  transform: rotate(var(--r)) scale(1.18);
+  opacity: 1;
+  transform: rotate(var(--r)) scale(1.14);
 }
 
 .aigc-card[data-explore="true"],
@@ -2321,7 +2322,8 @@ body.is-aigc-page {
   width: clamp(56px, 5.2vw, 84px);
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -50%) scale(0.76);
+  transform: translate3d(var(--cursor-x, -120px), var(--cursor-y, -120px), 0)
+    translate(-50%, -50%) scale(0.76);
   transition:
     opacity 180ms ease,
     transform 480ms var(--ease);
@@ -2330,7 +2332,8 @@ body.is-aigc-page {
 
 .aigc-explore-cursor.is-visible {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate3d(var(--cursor-x, -120px), var(--cursor-y, -120px), 0)
+    translate(-50%, -50%) scale(1);
 }
 
 .aigc-explore-cursor img {

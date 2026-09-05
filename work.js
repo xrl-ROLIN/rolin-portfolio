@@ -273,7 +273,8 @@ const categories = {
         focus: "Hackathon / Campaign / Motion",
         year: "2026",
         type: "video",
-        src: "./assets/live-the-next/01-main-motion.mp4",
+        src: "./assets/optimized/live-the-next-main-motion-30fps.mp4",
+        playbackRate: 1.12,
         className: "media-figure--moy",
       },
       {
@@ -711,6 +712,7 @@ const mediaDimensions = {
   "./assets/optimized/illustration-sisyphe-garden-fast.webp": [2400, 1350],
   "./assets/optimized/illustration-lipton-city-fast.webp": [2400, 1288],
   "./assets/optimized/illustration-lipton-system-fast.webp": [2164, 2400],
+  "./assets/optimized/live-the-next-main-motion-30fps.mp4": [1280, 854],
 };
 
 function getMediaDimensions(source) {
@@ -945,8 +947,11 @@ function createMedia(section, index) {
     media.loop = true;
     media.muted = true;
     media.playsInline = true;
-    media.preload = index === 0 ? "metadata" : "none";
-    if (index === 0) {
+    media.defaultPlaybackRate = section.playbackRate || 1;
+    media.playbackRate = media.defaultPlaybackRate;
+    const deferVideo = categoryKey === "campaign" || index !== 0;
+    media.preload = deferVideo ? "none" : "metadata";
+    if (!deferVideo) {
       media.src = section.src;
     } else {
       media.dataset.src = section.src;
@@ -1193,7 +1198,7 @@ function renderBrandDirectory() {
 
       event.preventDefault();
       wheelTotal += event.deltaY;
-      if (wheelLocked || Math.abs(wheelTotal) < 18) return;
+      if (wheelLocked || Math.abs(wheelTotal) < 10) return;
 
       const direction = Math.sign(wheelTotal);
       const nextCursor = activeCursor + direction;
@@ -1216,10 +1221,10 @@ function renderBrandDirectory() {
             preview.classList.toggle("is-active", previewIndex === activeCursor);
           });
         }
-      }, 730);
+      }, 360);
       window.setTimeout(() => {
         wheelLocked = false;
-      }, 760);
+      }, 390);
     },
     { passive: false },
   );
@@ -1235,17 +1240,17 @@ function renderBrandDirectory() {
 
 function renderAigcGallery() {
   const artworks = [
-    { src: "./assets/aigc-cipher/01.jpg", alt: "Surreal mushroom character", x: 50, y: 0, w: 8.6, r: -5, depth: 15 },
-    { src: "./assets/aigc-cipher/02.jpg", alt: "Mechanical sculpture", x: 76, y: 13, w: 9.6, r: 4, depth: 9 },
-    { src: "./assets/aigc-cipher/03.jpg", alt: "Motorcycle character artwork", x: 94, y: 31, w: 13.2, r: -3, depth: 12 },
-    { src: "./assets/aigc-cipher/04.jpg", alt: "Football game key visual", x: 97, y: 56, w: 8, r: 5, depth: 16, explore: true },
-    { src: "./assets/aigc-cipher/05.jpg", alt: "Fashion doll artwork", x: 86, y: 79, w: 8.8, r: 4, depth: 10 },
-    { src: "./assets/aigc-cipher/06.jpg", alt: "Formula racing vehicle", x: 64, y: 92, w: 13.5, r: -4, depth: 14 },
-    { src: "./assets/aigc-cipher/07.jpg", alt: "Skateboarding game key visual", x: 36, y: 92, w: 7.7, r: 5, depth: 8, explore: true },
-    { src: "./assets/aigc-cipher/08.jpg", alt: "Fashion editorial cover", x: 14, y: 79, w: 8.7, r: -4, depth: 13 },
-    { src: "./assets/aigc-cipher/09.jpg", alt: "Surreal botanical character", x: 3, y: 56, w: 8.4, r: 3, depth: 17 },
-    { src: "./assets/aigc-cipher/10.jpg", alt: "Fashion guitarist portrait", x: 6, y: 31, w: 8.6, r: -5, depth: 11 },
-    { src: "./assets/aigc-cipher/11.jpg", alt: "Fashion checkerboard artwork", x: 24, y: 13, w: 8.6, r: 4, depth: 15 },
+    { src: "./assets/optimized/aigc-gallery/01-fast.webp", alt: "Surreal mushroom character", x: 50, y: 0, w: 8.6, r: -5, depth: 15, iw: 896, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/02-fast.webp", alt: "Mechanical sculpture", x: 76, y: 13, w: 9.6, r: 4, depth: 9, iw: 1200, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/03-fast.webp", alt: "Motorcycle character artwork", x: 94, y: 31, w: 13.2, r: -3, depth: 12, iw: 1200, ih: 670 },
+    { src: "./assets/optimized/aigc-gallery/04-fast.webp", alt: "Football game key visual", x: 97, y: 56, w: 8, r: 5, depth: 16, explore: true, iw: 669, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/05-fast.webp", alt: "Fashion doll artwork", x: 86, y: 79, w: 8.8, r: 4, depth: 10, iw: 966, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/06-fast.webp", alt: "Formula racing vehicle", x: 64, y: 92, w: 13.5, r: -4, depth: 14, iw: 1200, ih: 552 },
+    { src: "./assets/optimized/aigc-gallery/07-fast.webp", alt: "Skateboarding game key visual", x: 36, y: 92, w: 7.7, r: 5, depth: 8, explore: true, iw: 669, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/08-fast.webp", alt: "Fashion editorial cover", x: 14, y: 79, w: 8.7, r: -4, depth: 13, iw: 944, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/09-fast.webp", alt: "Surreal botanical character", x: 3, y: 56, w: 8.4, r: 3, depth: 17, iw: 896, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/10-fast.webp", alt: "Fashion guitarist portrait", x: 6, y: 31, w: 8.6, r: -5, depth: 11, iw: 1200, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/11-fast.webp", alt: "Fashion checkerboard artwork", x: 24, y: 13, w: 8.6, r: 4, depth: 15, iw: 896, ih: 1200 },
   ];
 
   const stage = document.createElement("section");
@@ -1261,7 +1266,7 @@ function renderAigcGallery() {
     <div class="aigc-stage__artworks">
       ${artworks
         .map(
-          (artwork) => `
+          (artwork, artworkIndex) => `
             <figure
               class="aigc-card"
               tabindex="0"
@@ -1279,7 +1284,10 @@ function renderAigcGallery() {
                 <img
                   src="${artwork.src}"
                   alt="${artwork.alt}"
-                  loading="eager"
+                  width="${artwork.iw}"
+                  height="${artwork.ih}"
+                  loading="${artworkIndex < 4 ? "eager" : "lazy"}"
+                  fetchpriority="${artworkIndex < 4 ? "high" : "low"}"
                   decoding="async"
                 />
               </div>
@@ -1298,6 +1306,7 @@ function renderAigcGallery() {
   `;
 
   const cards = [...stage.querySelectorAll(".aigc-card")];
+  const cardMedia = cards.map((card) => card.querySelector(".aigc-card__media"));
   const exploreCursor = stage.querySelector(".aigc-explore-cursor");
   cards.forEach((card) => {
     const activate = () => {
@@ -1344,20 +1353,20 @@ function renderAigcGallery() {
       const x = (event.clientX - bounds.left) / bounds.width - 0.5;
       const y = (event.clientY - bounds.top) / bounds.height - 0.5;
       if (stage.classList.contains("is-exploring")) {
-        exploreCursor.style.left = `${event.clientX}px`;
-        exploreCursor.style.top = `${event.clientY}px`;
+        exploreCursor.style.setProperty("--cursor-x", `${event.clientX}px`);
+        exploreCursor.style.setProperty("--cursor-y", `${event.clientY}px`);
       }
-      cards.forEach((card) => {
+      cards.forEach((card, index) => {
         const depth = Number(card.dataset.depth);
-        card.querySelector(".aigc-card__media").style.transform =
+        cardMedia[index].style.transform =
           `translate3d(${x * depth}px, ${y * depth}px, 0)`;
       });
     });
   });
 
   stage.addEventListener("pointerleave", () => {
-    cards.forEach((card) => {
-      card.querySelector(".aigc-card__media").style.transform = "translate3d(0, 0, 0)";
+    cardMedia.forEach((media) => {
+      media.style.transform = "translate3d(0, 0, 0)";
     });
   });
 
@@ -1731,7 +1740,20 @@ measureIllustrationFigures();
 const deferredVideoObserver = new IntersectionObserver(
   (entries, currentObserver) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
+      const videos = entry.target.querySelectorAll("video");
+      if (!entry.isIntersecting) {
+        if (categoryKey === "campaign") {
+          videos.forEach((video) => {
+            const loadedSource = video.getAttribute("src");
+            if (!loadedSource) return;
+            video.pause();
+            video.dataset.src = loadedSource;
+            video.removeAttribute("src");
+            video.load();
+          });
+        }
+        return;
+      }
       entry.target.querySelectorAll("video[data-src]").forEach((video) => {
         video.src = video.dataset.src;
         delete video.dataset.src;
@@ -1746,12 +1768,12 @@ const deferredVideoObserver = new IntersectionObserver(
         );
         video.load();
       });
-      currentObserver.unobserve(entry.target);
+      if (categoryKey !== "campaign") currentObserver.unobserve(entry.target);
     });
   },
   {
     root: illustrationSplit ? stream : null,
-    rootMargin: "120% 0px",
+    rootMargin: categoryKey === "campaign" ? "65% 0px" : "120% 0px",
     threshold: 0.01,
   },
 );
