@@ -47,28 +47,42 @@ let birdVelocityX = 0;
 let birdVelocityY = 0;
 let birdLastFrameTime = performance.now();
 let birdNeedsReset = true;
+let cursorFrame = 0;
 
 window.addEventListener("pointermove", (event) => {
   mouseX = event.clientX;
   mouseY = event.clientY;
   projectCursorVisible = Boolean(event.target.closest?.(".directory-slide"));
   projectCursor.classList.toggle("is-visible", projectCursorVisible);
+  scheduleCursorAnimation();
   if (legacyBirdMotion) animateMouseBird(event, projectCursorVisible);
 });
 
 window.addEventListener("pointerleave", () => {
   projectCursorVisible = false;
   projectCursor.classList.remove("is-visible");
+  if (cursorFrame) {
+    cancelAnimationFrame(cursorFrame);
+    cursorFrame = 0;
+    cursorX = mouseX;
+    cursorY = mouseY;
+  }
   if (legacyBirdMotion) hideMouseBird(true);
 });
 
 function animateCursor() {
+  cursorFrame = 0;
   cursorX += (mouseX - cursorX) * 0.32;
   cursorY += (mouseY - cursorY) * 0.32;
   projectCursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
-  requestAnimationFrame(animateCursor);
+  if (Math.abs(mouseX - cursorX) > 0.1 || Math.abs(mouseY - cursorY) > 0.1) {
+    cursorFrame = requestAnimationFrame(animateCursor);
+  }
 }
-animateCursor();
+
+function scheduleCursorAnimation() {
+  if (!cursorFrame) cursorFrame = requestAnimationFrame(animateCursor);
+}
 
 function animateBirdFlight(now) {
   const delta = Math.min(0.034, Math.max(0.001, (now - birdLastFrameTime) / 1000));
@@ -363,6 +377,7 @@ function renderIntro(progress) {
 function advanceIntro(delta) {
   if (intro.classList.contains("is-directory")) return;
   introTarget = clamp(introTarget + delta);
+  scheduleIntroAnimation();
 }
 
 function restoreIntro() {
@@ -384,6 +399,7 @@ window.addEventListener(
         const direction = Math.sign(event.deltaY);
         const distance = Math.min(180, Math.abs(event.deltaY));
         directoryTarget += direction * Math.max(0.035, distance / Math.max(420, window.innerHeight * 0.72));
+        scheduleIntroAnimation();
       }
       return;
     }
@@ -414,6 +430,7 @@ window.addEventListener(
       const nextY = event.touches[0]?.clientY ?? directoryTouchY;
       directoryTarget += (directoryTouchY - nextY) / Math.max(360, window.innerHeight * 0.58);
       directoryTouchY = nextY;
+      scheduleIntroAnimation();
       return;
     }
     if (touchY === null) return;
@@ -425,22 +442,33 @@ window.addEventListener(
   { passive: false },
 );
 
+let introAnimationFrame = 0;
+
 function animateIntro() {
+  introAnimationFrame = 0;
+  let shouldContinue = false;
   if (!intro.classList.contains("is-directory")) {
     introProgress += (introTarget - introProgress) * 0.12;
     if (Math.abs(introTarget - introProgress) < 0.0001) introProgress = introTarget;
     renderIntro(introProgress);
     if (introTarget >= 1 && introProgress > 0.995) enterDirectory();
+    shouldContinue =
+      !intro.classList.contains("is-directory") &&
+      Math.abs(introTarget - introProgress) >= 0.0001;
   } else {
     directoryPhase += (directoryTarget - directoryPhase) * 0.12;
     if (Math.abs(directoryTarget - directoryPhase) < 0.0001) directoryPhase = directoryTarget;
     renderDirectoryMotion();
+    shouldContinue = Math.abs(directoryTarget - directoryPhase) >= 0.0001;
   }
-  requestAnimationFrame(animateIntro);
+  if (shouldContinue) introAnimationFrame = requestAnimationFrame(animateIntro);
+}
+
+function scheduleIntroAnimation() {
+  if (!introAnimationFrame) introAnimationFrame = requestAnimationFrame(animateIntro);
 }
 
 renderIntro(0);
-animateIntro();
 
 function enterDirectory() {
   projectSection?.scrollIntoView({ block: "start" });

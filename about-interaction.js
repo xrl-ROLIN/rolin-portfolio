@@ -317,6 +317,7 @@ if (section && stage && canvas) {
   let previousTime = performance.now();
   let visible = false;
   let layoutWidth = 0;
+  let scrollFrame = 0;
   let viewportResizeFrame = 0;
 
   function syncStableViewportHeight(force = false) {
@@ -353,6 +354,14 @@ if (section && stage && canvas) {
     const bounds = section.getBoundingClientRect();
     const reveal = clamp((height - bounds.top) / (height * 0.75), 0, 1);
     stage.style.setProperty("--contact-reveal", reveal.toFixed(4));
+  }
+
+  function requestScrollStateUpdate() {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      updateScrollState();
+    });
   }
 
   function renderParticles() {
@@ -399,7 +408,6 @@ if (section && stage && canvas) {
     pointer.previousY = pointer.y;
 
     renderParticles();
-    updateScrollState();
     frame = requestAnimationFrame(animate);
   }
 
@@ -469,14 +477,14 @@ if (section && stage && canvas) {
     stage.addEventListener("touchend", resetPointer, { passive: true });
     stage.addEventListener("touchcancel", resetPointer, { passive: true });
   }
-  addEventListener("scroll", updateScrollState, { passive: true });
+  addEventListener("scroll", requestScrollStateUpdate, { passive: true });
   addEventListener(
     "resize",
     () => {
       cancelAnimationFrame(viewportResizeFrame);
       viewportResizeFrame = requestAnimationFrame(() => {
         syncStableViewportHeight();
-        updateScrollState();
+        requestScrollStateUpdate();
       });
     },
     { passive: true },
@@ -492,7 +500,7 @@ if (section && stage && canvas) {
       if (visible) start();
       else stop();
     },
-    { rootMargin: "60% 0px", threshold: 0 },
+    { rootMargin: "15% 0px", threshold: 0 },
   ).observe(section);
 
   syncStableViewportHeight(true);

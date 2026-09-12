@@ -1491,6 +1491,8 @@ const nextTransitionLabel = document.querySelector(".next-section-transition__la
 let nextTransitionStarted = false;
 let brandTransitionAnimation = null;
 let brandTransitionReady = false;
+let brandTransitionLoading = false;
+let transitionMediaPrepared = false;
 
 if (categoryKey === "illustration") {
   nextTransition.classList.add("is-brand-packaging");
@@ -1499,32 +1501,107 @@ if (categoryKey === "illustration") {
     <span><i>PACKAGING</i></span>
   `;
   nextTransitionLabel.hidden = false;
-  if (window.lottie && nextTransitionLottie) {
-    nextTransitionVideo.removeAttribute("src");
-    nextTransitionVideo.load();
-    nextTransition.classList.add("has-lottie");
-    brandTransitionAnimation = window.lottie.loadAnimation({
-      container: nextTransitionLottie,
-      renderer: "svg",
-      loop: false,
-      autoplay: false,
-      path: "./assets/transitions/archer-interactive-gray.json",
-      rendererSettings: {
-        preserveAspectRatio: "xMidYMid meet",
-        progressiveLoad: true,
-      },
-    });
-    brandTransitionAnimation.addEventListener("DOMLoaded", () => {
-      brandTransitionReady = true;
-      brandTransitionAnimation.goToAndStop(0, true);
-    });
-  } else {
-    nextTransitionVideo.src = "./assets/transitions/brand-packaging-v16.mp4?v=1";
-  }
 } else if (categoryKey === "brand") {
   nextTransition.classList.add("is-three-d-aigc");
-  nextTransitionVideo.src = "./assets/transitions/3d-aigc-bike-v6.mp4?v=1";
 }
+
+function setTransitionVideoSource(source) {
+  if (nextTransitionVideo.getAttribute("src") === source) return;
+  nextTransitionVideo.preload = "auto";
+  nextTransitionVideo.src = source;
+  nextTransitionVideo.load();
+}
+
+const transitionSources = {
+  campaign: "./assets/transitions/next-section.mp4",
+  illustration: "./assets/transitions/brand-packaging-v16.mp4?v=1",
+  brand: "./assets/transitions/3d-aigc-bike-v6.mp4?v=1",
+  "three-d-aigc": "./assets/transitions/next-section.mp4",
+};
+
+function initializeBrandTransitionLottie() {
+  brandTransitionLoading = false;
+  if (
+    categoryKey !== "illustration" ||
+    !window.lottie ||
+    !nextTransitionLottie ||
+    nextTransitionStarted ||
+    brandTransitionAnimation
+  ) {
+    return;
+  }
+
+  brandTransitionAnimation = window.lottie.loadAnimation({
+    container: nextTransitionLottie,
+    renderer: "svg",
+    loop: false,
+    autoplay: false,
+    path: "./assets/transitions/archer-interactive-gray.json",
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid meet",
+      progressiveLoad: true,
+    },
+  });
+  brandTransitionAnimation.addEventListener("DOMLoaded", () => {
+    brandTransitionReady = true;
+    brandTransitionAnimation.goToAndStop(0, true);
+    if (!nextTransitionStarted) {
+      nextTransition.classList.add("has-lottie");
+      nextTransitionVideo.pause();
+      nextTransitionVideo.removeAttribute("src");
+      nextTransitionVideo.load();
+    }
+  });
+}
+
+function loadBrandTransitionLottie() {
+  if (
+    categoryKey !== "illustration" ||
+    brandTransitionLoading ||
+    brandTransitionAnimation
+  ) {
+    return;
+  }
+
+  if (window.lottie) {
+    initializeBrandTransitionLottie();
+    return;
+  }
+
+  brandTransitionLoading = true;
+  const script = document.createElement("script");
+  script.src = "./assets/vendor/lottie.min.js";
+  script.async = true;
+  script.addEventListener("load", initializeBrandTransitionLottie, { once: true });
+  script.addEventListener(
+    "error",
+    () => {
+      brandTransitionLoading = false;
+    },
+    { once: true },
+  );
+  document.head.append(script);
+}
+
+function prepareNextTransitionMedia() {
+  if (transitionMediaPrepared) return;
+  transitionMediaPrepared = true;
+
+  setTransitionVideoSource(transitionSources[categoryKey]);
+  loadBrandTransitionLottie();
+}
+
+const transitionWarmObserver = new IntersectionObserver(
+  (entries, currentObserver) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    prepareNextTransitionMedia();
+    currentObserver.disconnect();
+  },
+  { rootMargin: "100% 0px" },
+);
+transitionWarmObserver.observe(nextLink);
+nextLink.addEventListener("pointerenter", prepareNextTransitionMedia, { once: true });
+nextLink.addEventListener("focus", prepareNextTransitionMedia, { once: true });
 
 nextLink.addEventListener("click", (event) => {
   if (
@@ -1543,6 +1620,7 @@ nextLink.addEventListener("click", (event) => {
   event.preventDefault();
   if (nextTransitionStarted) return;
   nextTransitionStarted = true;
+  prepareNextTransitionMedia();
 
   const destination = nextLink.href;
   let navigationTimer = 0;
@@ -1556,7 +1634,11 @@ nextLink.addEventListener("click", (event) => {
   const usePointerScrub =
     categoryKey === "illustration" && matchMedia("(pointer: fine)").matches;
 
-  if (categoryKey === "illustration" && brandTransitionAnimation) {
+  if (
+    categoryKey === "illustration" &&
+    brandTransitionReady &&
+    brandTransitionAnimation
+  ) {
     const startLottieTransition = () => {
       const totalFrames = Math.max(1, brandTransitionAnimation.totalFrames - 1);
 
@@ -1639,13 +1721,7 @@ nextLink.addEventListener("click", (event) => {
       }, 12000);
     };
 
-    if (brandTransitionReady) {
-      startLottieTransition();
-    } else {
-      brandTransitionAnimation.addEventListener("DOMLoaded", startLottieTransition, {
-        once: true,
-      });
-    }
+    startLottieTransition();
     return;
   }
 
@@ -1727,53 +1803,90 @@ function updateAside(index, immediate = false) {
 }
 
 const figures = [...document.querySelectorAll(".media-figure")];
-let illustrationFigureCenters = [];
+let figureCenters = [];
 
-function measureIllustrationFigures() {
-  if (!illustrationSplit) return;
-  illustrationFigureCenters = figures.map(
-    (figure) => figure.offsetTop + figure.offsetHeight * 0.5,
-  );
+function measureFigureCenters() {
+  const scrollPosition = illustrationSplit ? stream.scrollTop : window.scrollY;
+  figureCenters = figures.map((figure) => {
+    if (illustrationSplit) return figure.offsetTop + figure.offsetHeight * 0.5;
+    const bounds = figure.getBoundingClientRect();
+    return bounds.top + scrollPosition + bounds.height * 0.5;
+  });
 }
 
-measureIllustrationFigures();
+function findClosestFigureIndex(position) {
+  if (!figureCenters.length) return 0;
+  let low = 0;
+  let high = figureCenters.length - 1;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    if (figureCenters[middle] < position) low = middle + 1;
+    else high = middle;
+  }
+  if (low === 0) return 0;
+  return position - figureCenters[low - 1] <= figureCenters[low] - position
+    ? low - 1
+    : low;
+}
+
+measureFigureCenters();
+const releasableVideoPage = categoryKey === "campaign" || categoryKey === "illustration";
+
+function releaseVideo(video) {
+  const loadedSource = video.getAttribute("src");
+  if (!loadedSource) return;
+  video.pause();
+  if (Number.isFinite(video.currentTime) && video.currentTime > 0) {
+    video.dataset.resumeTime = String(video.currentTime);
+  }
+  video.dataset.src = loadedSource;
+  video.removeAttribute("src");
+  video.load();
+}
+
+function restoreVideo(video) {
+  const source = video.dataset.src;
+  if (!source) return;
+  video.src = source;
+  delete video.dataset.src;
+  video.addEventListener(
+    "loadedmetadata",
+    () => {
+      const resumeTime = Number(video.dataset.resumeTime || 0);
+      if (resumeTime > 0 && Number.isFinite(video.duration)) {
+        video.currentTime = Math.min(resumeTime, Math.max(0, video.duration - 0.05));
+      }
+      video.playbackRate = video.defaultPlaybackRate || 1;
+    },
+    { once: true },
+  );
+  video.addEventListener(
+    "canplay",
+    () => {
+      if (video.dataset.playbackVisible === "true" && !document.hidden) {
+        video.play().catch(() => {});
+      }
+    },
+    { once: true },
+  );
+  video.load();
+}
+
 const deferredVideoObserver = new IntersectionObserver(
   (entries, currentObserver) => {
     entries.forEach((entry) => {
       const videos = entry.target.querySelectorAll("video");
       if (!entry.isIntersecting) {
-        if (categoryKey === "campaign") {
-          videos.forEach((video) => {
-            const loadedSource = video.getAttribute("src");
-            if (!loadedSource) return;
-            video.pause();
-            video.dataset.src = loadedSource;
-            video.removeAttribute("src");
-            video.load();
-          });
-        }
+        if (releasableVideoPage) videos.forEach(releaseVideo);
         return;
       }
-      entry.target.querySelectorAll("video[data-src]").forEach((video) => {
-        video.src = video.dataset.src;
-        delete video.dataset.src;
-        video.addEventListener(
-          "canplay",
-          () => {
-            if (entry.target.classList.contains("is-visible")) {
-              video.play().catch(() => {});
-            }
-          },
-          { once: true },
-        );
-        video.load();
-      });
-      if (categoryKey !== "campaign") currentObserver.unobserve(entry.target);
+      videos.forEach(restoreVideo);
+      if (!releasableVideoPage) currentObserver.unobserve(entry.target);
     });
   },
   {
     root: illustrationSplit ? stream : null,
-    rootMargin: categoryKey === "campaign" ? "65% 0px" : "120% 0px",
+    rootMargin: releasableVideoPage ? "65% 0px" : "120% 0px",
     threshold: 0.01,
   },
 );
@@ -1784,67 +1897,57 @@ const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       const videos = entry.target.querySelectorAll("video");
+      entry.target.classList.toggle("is-active", entry.isIntersecting);
       if (entry.isIntersecting) {
         entry.target.classList.add("is-visible");
         videos.forEach((video) => {
-          if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+          video.dataset.playbackVisible = "true";
+          if (video.dataset.src) restoreVideo(video);
+          if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && !document.hidden) {
             video.play().catch(() => {});
-          } else {
-            video.addEventListener(
-              "canplay",
-              () => video.play().catch(() => {}),
-              { once: true },
-            );
           }
         });
       } else {
-        videos.forEach((video) => video.pause());
+        videos.forEach((video) => {
+          video.dataset.playbackVisible = "false";
+          video.pause();
+        });
       }
     });
   },
   {
     root: illustrationSplit ? stream : null,
-    rootMargin: "10% 0px -8%",
-    threshold: 0.08,
+    rootMargin: "-8% 0px",
+    threshold: 0,
   },
 );
 
 figures.forEach((figure) => observer.observe(figure));
 
+document.addEventListener("visibilitychange", () => {
+  figures.forEach((figure) => {
+    figure.querySelectorAll("video").forEach((video) => {
+      if (document.hidden) {
+        video.pause();
+      } else if (video.dataset.playbackVisible === "true") {
+        if (video.dataset.src) restoreVideo(video);
+        else video.play().catch(() => {});
+      }
+    });
+  });
+});
+
 function renderScroll() {
   const viewportHeight = illustrationSplit ? stream.clientHeight : window.innerHeight;
   const center = viewportHeight * 0.48;
-  let closestIndex = 0;
-  let closestDistance = Number.POSITIVE_INFINITY;
-
-  if (illustrationSplit) {
-    const absoluteCenter = stream.scrollTop + center;
-    illustrationFigureCenters.forEach((figureCenter, index) => {
-      const distance = Math.abs(figureCenter - absoluteCenter);
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
-      }
-    });
-  } else {
-    figures.forEach((figure, index) => {
-      const rect = figure.getBoundingClientRect();
-      const figureCenter = rect.top + rect.height * 0.5;
-      const distance = Math.abs(figureCenter - center);
-      figure.classList.toggle("is-active", distance < viewportHeight * 0.42);
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
-      }
-    });
-  }
+  const scrollPosition = illustrationSplit ? stream.scrollTop : window.scrollY;
+  const closestIndex = findClosestFigureIndex(scrollPosition + center);
 
   updateAside(closestIndex);
   const scrollRange =
     illustrationSplit
       ? Math.max(1, stream.scrollHeight - stream.clientHeight)
       : Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-  const scrollPosition = illustrationSplit ? stream.scrollTop : window.scrollY;
   const progress = Math.min(1, Math.max(0, scrollPosition / scrollRange));
   progressBar.style.width = `${progress * 100}%`;
   progressNumber.textContent = String(Math.round(progress * 100)).padStart(2, "0");
@@ -1859,12 +1962,24 @@ function scheduleRenderScroll() {
   });
 }
 
+let measureFrame = 0;
+function scheduleMeasureFigures() {
+  if (measureFrame) return;
+  measureFrame = requestAnimationFrame(() => {
+    measureFrame = 0;
+    measureFigureCenters();
+    renderScroll();
+  });
+}
+
+if ("ResizeObserver" in window && figures.length) {
+  const figureResizeObserver = new ResizeObserver(scheduleMeasureFigures);
+  figures.forEach((figure) => figureResizeObserver.observe(figure));
+}
+
 updateAside(0, true);
 renderScroll();
 (illustrationSplit ? stream : window).addEventListener("scroll", scheduleRenderScroll, {
   passive: true,
 });
-window.addEventListener("resize", () => {
-  measureIllustrationFigures();
-  scheduleRenderScroll();
-});
+window.addEventListener("resize", scheduleMeasureFigures);

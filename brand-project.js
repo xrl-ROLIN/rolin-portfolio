@@ -63,6 +63,7 @@ const renderedSections = projectOrder.map((currentProjectKey) => {
     const isEntryImage = currentProjectKey === projectKey && imageIndex === 0;
     const isTourImage =
       shouldPlayEntryTour &&
+      imageIndex === 0 &&
       projectOrder.indexOf(currentProjectKey) <= entryProjectIndex;
     image.src = src;
     image.alt = alt;
@@ -204,7 +205,7 @@ if (shouldPlayEntryTour) {
     ...gallery.querySelectorAll(
       projectOrder
         .slice(0, entryProjectIndex + 1)
-        .map((key) => `#${key} img`)
+        .map((key) => `#${key} .project-frame:first-child img`)
         .join(","),
     ),
   ];
@@ -266,6 +267,25 @@ const transition = document.querySelector(".project-transition");
 const transitionVideo = transition.querySelector("video");
 let transitionStarted = false;
 
+function prepareTransitionVideo() {
+  if (transitionVideo.getAttribute("src") || !transitionVideo.dataset.src) return;
+  transitionVideo.src = transitionVideo.dataset.src;
+  delete transitionVideo.dataset.src;
+  transitionVideo.load();
+}
+
+const transitionWarmObserver = new IntersectionObserver(
+  (entries, currentObserver) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    prepareTransitionVideo();
+    currentObserver.disconnect();
+  },
+  { rootMargin: "100% 0px" },
+);
+transitionWarmObserver.observe(nextLink);
+nextLink.addEventListener("pointerenter", prepareTransitionVideo, { once: true });
+nextLink.addEventListener("focus", prepareTransitionVideo, { once: true });
+
 nextLink.addEventListener("click", (event) => {
   if (
     event.button !== 0 ||
@@ -281,6 +301,7 @@ nextLink.addEventListener("click", (event) => {
   event.preventDefault();
   if (transitionStarted) return;
   transitionStarted = true;
+  prepareTransitionVideo();
 
   const destination = nextLink.href;
   let navigationTimer = 0;
