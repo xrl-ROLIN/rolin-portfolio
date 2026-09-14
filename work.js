@@ -83,7 +83,7 @@ const categories = {
         focus: "UI / Motion / Campaign",
         year: "2026",
         type: "video",
-        src: "./assets/moy/01-moy-ui.mp4",
+        src: "./assets/moy/01-moy-ui.mp4?v=2",
         className: "media-figure--moy",
       },
       {
