@@ -304,7 +304,7 @@ const categories = {
         focus: "AI Tool / Visual Template / UI",
         year: "2026",
         type: "image",
-        src: "./assets/live-the-next/04-ai-tool-building.webp",
+        src: "./assets/live-the-next/04-ai-tool-building.webp?v=2",
         alt: "LIVE the Next AI tool building visual system",
         className: "media-figure--moy",
       },
@@ -691,6 +691,7 @@ const categories = {
 
 const mediaDimensions = {
   "./assets/live-moment/04-self-created-v2.webp": [5120, 2880],
+  "./assets/live-the-next/04-ai-tool-building.webp": [5120, 2880],
   "./assets/optimized/illustration-hay-01-form-plus-grace-fast.webp": [2400, 1350],
   "./assets/optimized/illustration-hay-02-live-in-art-fast.webp": [2400, 1350],
   "./assets/optimized/illustration-hay-03-object-story-fast.webp": [2400, 1350],
