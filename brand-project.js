@@ -8,7 +8,7 @@ const projects = {
       ["./assets/optimized/brand-project-bingo-03-brand-system-fast.webp", "BinGo brand system", 2400, 1524],
       ["./assets/optimized/brand-project-bingo-04-product-family-fast.webp", "BinGo product family", 2400, 1350],
       ["./assets/optimized/brand-project-bingo-05-product-scene-fast.webp", "BinGo product scene", 2400, 1350],
-      ["./assets/optimized/brand-project-bingo-06-outdoor-campaign-fast.webp", "BinGo outdoor campaign", 2400, 1350],
+      ["./assets/optimized/brand-project-bingo-06-outdoor-campaign-fast.webp?v=2", "BinGo outdoor campaign", 5120, 2881],
     ],
   },
   stillwood: {
