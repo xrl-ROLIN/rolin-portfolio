@@ -220,7 +220,7 @@ const categories = {
         focus: "Self-Created Campaign / Visual System",
         year: "2026",
         type: "image",
-        src: "./assets/live-moment/04-self-created-v2.webp?v=2",
+        src: "./assets/live-moment/04-self-created-v2.webp?v=3",
         alt: "LIVE MOMENT self-created campaign system",
         className: "media-figure--moy",
       },
@@ -690,7 +690,7 @@ const categories = {
 };
 
 const mediaDimensions = {
-  "./assets/live-moment/04-self-created-v2.webp": [5120, 2883],
+  "./assets/live-moment/04-self-created-v2.webp": [5120, 2880],
   "./assets/optimized/illustration-hay-01-form-plus-grace-fast.webp": [2400, 1350],
   "./assets/optimized/illustration-hay-02-live-in-art-fast.webp": [2400, 1350],
   "./assets/optimized/illustration-hay-03-object-story-fast.webp": [2400, 1350],
