@@ -248,6 +248,7 @@ let directoryTarget = 0;
 let directoryPhase = 0;
 let directoryTouchY = null;
 let activeDirectoryIndex = -1;
+const introClickStops = [0.23, 0.45, 0.7, 0.88, 1];
 
 const buildPoints = [
   { x: 14, y: 72 },
@@ -379,6 +380,25 @@ function advanceIntro(delta) {
   introTarget = clamp(introTarget + delta);
   scheduleIntroAnimation();
 }
+
+intro.addEventListener("click", (event) => {
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.detail === 0 ||
+    (event.pointerType && event.pointerType !== "mouse") ||
+    event.sourceCapabilities?.firesTouchEvents ||
+    intro.classList.contains("is-directory") ||
+    event.target.closest?.("a, button, input, select, textarea, [role='button']")
+  ) {
+    return;
+  }
+
+  const nextStop = introClickStops.find((stop) => stop > introTarget + 0.0001);
+  if (nextStop === undefined) return;
+  introTarget = nextStop;
+  scheduleIntroAnimation();
+});
 
 function restoreIntro() {
   intro.classList.remove("is-directory");
