@@ -248,7 +248,7 @@ let directoryTarget = 0;
 let directoryPhase = 0;
 let directoryTouchY = null;
 let activeDirectoryIndex = -1;
-const introClickStops = [0.23, 0.45, 0.7, 0.88, 1];
+const introClickStep = 0.04;
 
 const buildPoints = [
   { x: 14, y: 72 },
@@ -394,10 +394,7 @@ intro.addEventListener("click", (event) => {
     return;
   }
 
-  const nextStop = introClickStops.find((stop) => stop > introTarget + 0.0001);
-  if (nextStop === undefined) return;
-  introTarget = nextStop;
-  scheduleIntroAnimation();
+  advanceIntro(introClickStep);
 });
 
 function restoreIntro() {
