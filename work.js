@@ -170,7 +170,7 @@ const categories = {
         className: "media-figure--moy media-figure--video-pair",
       },
       {
-        title: "EOY-Live Fest",
+        title: "EOY-Live Fest Draft",
         description:
           "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
