@@ -176,8 +176,63 @@ const categories = {
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
-        src: "./assets/optimized/eoy-live-fest.webp?v=1",
-        alt: "TikTok LIVE FEST 26 EOY creator video campaign",
+        src: "./assets/eoy-live-fest/01-hero.webp?v=1",
+        alt: "TikTok LIVE FEST 26 hero",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest Draft",
+        description:
+          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
+        src: "./assets/eoy-live-fest/02-concept.webp?v=1",
+        alt: "TikTok LIVE FEST 26 concept",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest Draft",
+        description:
+          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
+        src: "./assets/eoy-live-fest/03-concept-creators.webp?v=1",
+        alt: "TikTok LIVE FEST 26 concept creators",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest Draft",
+        description:
+          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
+        src: "./assets/eoy-live-fest/04-brand-idea.webp?v=1",
+        alt: "TikTok LIVE FEST 26 brand idea",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest Draft",
+        description:
+          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
+        src: "./assets/eoy-live-fest/05-ui-visuals.webp?v=1",
+        alt: "TikTok LIVE FEST 26 ui visuals",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest Draft",
+        description:
+          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
+        src: "./assets/eoy-live-fest/06-ooh.webp?v=1",
+        alt: "TikTok LIVE FEST 26 ooh",
         className: "media-figure--moy",
       },
       {
@@ -690,6 +745,12 @@ const categories = {
 };
 
 const mediaDimensions = {
+  "./assets/eoy-live-fest/01-hero.webp": [4096, 2304],
+  "./assets/eoy-live-fest/02-concept.webp": [4096, 2304],
+  "./assets/eoy-live-fest/03-concept-creators.webp": [4096, 2304],
+  "./assets/eoy-live-fest/04-brand-idea.webp": [4096, 2303],
+  "./assets/eoy-live-fest/05-ui-visuals.webp": [4096, 2304],
+  "./assets/eoy-live-fest/06-ooh.webp": [4096, 2304],
   "./assets/live-moment/04-self-created-v2.webp": [5120, 2880],
   "./assets/live-the-next/04-ai-tool-building.webp": [5120, 2880],
   "./assets/optimized/illustration-hay-01-form-plus-grace-fast.webp": [2400, 1350],
@@ -741,7 +802,7 @@ const liveMomentSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(17, 21).forEach((section) => {
+categories.campaign.sections.slice(22, 26).forEach((section) => {
   Object.assign(section, liveMomentSharedInfo);
 });
 
@@ -753,7 +814,7 @@ const regionalFestSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(21, 24).forEach((section) => {
+categories.campaign.sections.slice(26, 29).forEach((section) => {
   Object.assign(section, regionalFestSharedInfo);
 });
 
@@ -765,7 +826,7 @@ const hackathonSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(25, 28).forEach((section) => {
+categories.campaign.sections.slice(30, 33).forEach((section) => {
   Object.assign(section, hackathonSharedInfo);
 });
 
