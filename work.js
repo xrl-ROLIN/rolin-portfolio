@@ -170,9 +170,9 @@ const categories = {
         className: "media-figure--moy media-figure--video-pair",
       },
       {
-        title: "EOY-Live Fest Draft",
+        title: "EOY-Live Fest",
         description:
-          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
@@ -181,9 +181,9 @@ const categories = {
         className: "media-figure--moy",
       },
       {
-        title: "EOY-Live Fest Draft",
+        title: "EOY-Live Fest",
         description:
-          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
@@ -192,9 +192,9 @@ const categories = {
         className: "media-figure--moy",
       },
       {
-        title: "EOY-Live Fest Draft",
+        title: "EOY-Live Fest",
         description:
-          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
@@ -203,9 +203,9 @@ const categories = {
         className: "media-figure--moy",
       },
       {
-        title: "EOY-Live Fest Draft",
+        title: "EOY-Live Fest",
         description:
-          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
@@ -214,9 +214,9 @@ const categories = {
         className: "media-figure--moy",
       },
       {
-        title: "EOY-Live Fest Draft",
+        title: "EOY-Live Fest",
         description:
-          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
@@ -225,9 +225,9 @@ const categories = {
         className: "media-figure--moy",
       },
       {
-        title: "EOY-Live Fest Draft",
+        title: "EOY-Live Fest",
         description:
-          "EOY26 Further Integrates The Online Competition, In-Product Benefits, And The Offline Ceremony In Tokyo To Create A Unified Global Year-End Celebration Experience Is Annual Flagship Global Competition For Creators Worldwide.",
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
