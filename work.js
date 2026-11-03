@@ -220,6 +220,28 @@ const categories = {
         focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
         year: "2026",
         type: "image",
+        src: "./assets/eoy-live-fest/07-ui-entry.webp?v=1",
+        alt: "TikTok LIVE FEST 26 07-ui-entry",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest",
+        description:
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
+        src: "./assets/eoy-live-fest/08-ui-overview.webp?v=1",
+        alt: "TikTok LIVE FEST 26 08-ui-overview",
+        className: "media-figure--moy",
+      },
+      {
+        title: "EOY-Live Fest",
+        description:
+          "TikTok LIVE's flagship global event of the year, bringing together top creators from around the world. Spanning multiple countries and regions, it combines world-class competition, global influence, and immersive experiences to deliver the platform's most iconic celebration of the year.",
+        focus: "Brand·KV / Visual·UX·SWAG·UI·OOH·Campaign Extensions",
+        year: "2026",
+        type: "image",
         src: "./assets/eoy-live-fest/05-ui-visuals.webp?v=1",
         alt: "TikTok LIVE FEST 26 ui visuals",
         className: "media-figure--moy",
@@ -745,6 +767,8 @@ const categories = {
 };
 
 const mediaDimensions = {
+  "./assets/eoy-live-fest/07-ui-entry.webp": [4096, 2303],
+  "./assets/eoy-live-fest/08-ui-overview.webp": [4096, 2304],
   "./assets/eoy-live-fest/01-hero.webp": [4096, 2304],
   "./assets/eoy-live-fest/02-concept.webp": [4096, 2304],
   "./assets/eoy-live-fest/03-concept-creators.webp": [4096, 2304],
@@ -802,7 +826,7 @@ const liveMomentSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(22, 26).forEach((section) => {
+categories.campaign.sections.slice(24, 28).forEach((section) => {
   Object.assign(section, liveMomentSharedInfo);
 });
 
@@ -814,7 +838,7 @@ const regionalFestSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(26, 29).forEach((section) => {
+categories.campaign.sections.slice(28, 31).forEach((section) => {
   Object.assign(section, regionalFestSharedInfo);
 });
 
@@ -826,7 +850,7 @@ const hackathonSharedInfo = {
   year: "2026",
 };
 
-categories.campaign.sections.slice(30, 33).forEach((section) => {
+categories.campaign.sections.slice(32, 35).forEach((section) => {
   Object.assign(section, hackathonSharedInfo);
 });
 
