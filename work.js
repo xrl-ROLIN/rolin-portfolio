@@ -1327,15 +1327,15 @@ function renderBrandDirectory() {
 
 function renderAigcGallery() {
   const artworks = [
-    { src: "./assets/optimized/aigc-gallery/01-fast.webp", alt: "Surreal mushroom character", x: 50.00, y: 8.60, w: 13.34, r: -5, depth: 15, iw: 896, ih: 1200 },
-    { src: "./assets/optimized/aigc-gallery/02-fast.webp", alt: "Mechanical sculpture", x: 74.17, y: 18.28, w: 14.89, r: 4, depth: 9, iw: 1200, ih: 1200 },
-    { src: "./assets/optimized/aigc-gallery/03-fast.webp", alt: "Motorcycle character artwork", x: 87.03, y: 42.81, w: 20.48, r: -3, depth: 12, iw: 1200, ih: 670 },
-    { src: "./assets/optimized/aigc-gallery/05-fast.webp", alt: "Fashion doll artwork", x: 82.56, y: 70.70, w: 13.66, r: 4, depth: 10, iw: 966, ih: 1200 },
-    { src: "./assets/optimized/aigc-gallery/06-fast.webp", alt: "Formula racing vehicle", x: 62.86, y: 88.91, w: 20.96, r: -4, depth: 14, iw: 1200, ih: 552 },
-    { src: "./assets/optimized/aigc-gallery/08-fast.webp", alt: "Fashion editorial cover", x: 37.14, y: 88.91, w: 13.50, r: -4, depth: 13, iw: 944, ih: 1200 },
-    { src: "./assets/optimized/aigc-gallery/09-fast.webp", alt: "Surreal botanical character", x: 17.44, y: 70.70, w: 13.05, r: 3, depth: 17, iw: 896, ih: 1200 },
-    { src: "./assets/optimized/aigc-gallery/10-fast.webp", alt: "Fashion guitarist portrait", x: 12.97, y: 42.81, w: 13.34, r: -5, depth: 11, iw: 1200, ih: 1200 },
-    { src: "./assets/optimized/aigc-gallery/11-fast.webp", alt: "Fashion checkerboard artwork", x: 25.83, y: 18.28, w: 13.34, r: 4, depth: 15, iw: 896, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/01-fast.webp", alt: "Surreal mushroom character", x: 50.00, y: 7.36, w: 12.01, r: -5, depth: 15, iw: 896, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/02-fast.webp", alt: "Mechanical sculpture", x: 74.90, y: 17.33, w: 13.40, r: 4, depth: 9, iw: 1200, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/03-fast.webp", alt: "Motorcycle character artwork", x: 88.14, y: 42.59, w: 18.43, r: -3, depth: 12, iw: 1200, ih: 670 },
+    { src: "./assets/optimized/aigc-gallery/05-fast.webp", alt: "Fashion doll artwork", x: 83.54, y: 71.32, w: 12.29, r: 4, depth: 10, iw: 966, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/06-fast.webp", alt: "Formula racing vehicle", x: 63.25, y: 90.08, w: 18.86, r: -4, depth: 14, iw: 1200, ih: 552 },
+    { src: "./assets/optimized/aigc-gallery/08-fast.webp", alt: "Fashion editorial cover", x: 36.75, y: 90.08, w: 12.15, r: -4, depth: 13, iw: 944, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/09-fast.webp", alt: "Surreal botanical character", x: 16.46, y: 71.32, w: 11.75, r: 3, depth: 17, iw: 896, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/10-fast.webp", alt: "Fashion guitarist portrait", x: 11.86, y: 42.59, w: 12.01, r: -5, depth: 11, iw: 1200, ih: 1200 },
+    { src: "./assets/optimized/aigc-gallery/11-fast.webp", alt: "Fashion checkerboard artwork", x: 25.10, y: 17.33, w: 12.01, r: 4, depth: 15, iw: 896, ih: 1200 },
   ];
 
   const stage = document.createElement("section");
