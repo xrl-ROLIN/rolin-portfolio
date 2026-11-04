@@ -1330,10 +1330,8 @@ function renderAigcGallery() {
     { src: "./assets/optimized/aigc-gallery/01-fast.webp", alt: "Surreal mushroom character", x: 50, y: 0, w: 8.6, r: -5, depth: 15, iw: 896, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/02-fast.webp", alt: "Mechanical sculpture", x: 76, y: 13, w: 9.6, r: 4, depth: 9, iw: 1200, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/03-fast.webp", alt: "Motorcycle character artwork", x: 94, y: 31, w: 13.2, r: -3, depth: 12, iw: 1200, ih: 670 },
-    { src: "./assets/optimized/aigc-gallery/04-fast.webp", alt: "Football game key visual", x: 97, y: 56, w: 8, r: 5, depth: 16, explore: true, iw: 669, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/05-fast.webp", alt: "Fashion doll artwork", x: 86, y: 79, w: 8.8, r: 4, depth: 10, iw: 966, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/06-fast.webp", alt: "Formula racing vehicle", x: 64, y: 92, w: 13.5, r: -4, depth: 14, iw: 1200, ih: 552 },
-    { src: "./assets/optimized/aigc-gallery/07-fast.webp", alt: "Skateboarding game key visual", x: 36, y: 92, w: 7.7, r: 5, depth: 8, explore: true, iw: 669, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/08-fast.webp", alt: "Fashion editorial cover", x: 14, y: 79, w: 8.7, r: -4, depth: 13, iw: 944, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/09-fast.webp", alt: "Surreal botanical character", x: 3, y: 56, w: 8.4, r: 3, depth: 17, iw: 896, ih: 1200 },
     { src: "./assets/optimized/aigc-gallery/10-fast.webp", alt: "Fashion guitarist portrait", x: 6, y: 31, w: 8.6, r: -5, depth: 11, iw: 1200, ih: 1200 },
@@ -1365,7 +1363,6 @@ function renderAigcGallery() {
               "
               data-depth="${artwork.depth}"
               data-explore="${artwork.explore ? "true" : "false"}"
-              ${artwork.explore ? `role="link" aria-label="Explore Tmall sports project"` : ""}
             >
               <div class="aigc-card__media">
                 <img
@@ -1418,17 +1415,7 @@ function renderAigcGallery() {
     card.addEventListener("pointerleave", deactivate);
     card.addEventListener("focus", activate);
     card.addEventListener("blur", deactivate);
-    if (card.dataset.explore === "true") {
-      card.addEventListener("click", () => {
-        window.location.href = "./aigc-project.html";
-      });
-      card.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          window.location.href = "./aigc-project.html";
-        }
-      });
-    }
+
   });
 
   let pointerFrame = 0;
