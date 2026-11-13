@@ -6,6 +6,9 @@
   let clickCount = 0;
   function react(state, duration) {
     clearTimeout(reactionTimer);
+    delete cat.dataset.reaction;
+    // Restart the animation even when the previous reaction is still playing.
+    void cat.offsetWidth;
     cat.dataset.reaction = state;
     reactionTimer = setTimeout(() => delete cat.dataset.reaction, duration);
   }
@@ -18,10 +21,13 @@
     cat.style.setProperty("--look-y", (Math.tanh(y / 105) * 1.8) + "px");
   }, { passive: true });
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) react("react", 650);
+    if (!document.hidden) react("react", 960);
   });
   document.addEventListener("click", (event) => {
-    if (event.target.closest('a[href="#project"]')) react("react", 650);
+    if (event.target.closest('a[href="#project"]')) react("react", 960);
+  });
+  cat.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "mouse" && !cat.dataset.reaction) react("react", 960);
   });
   cat.addEventListener("click", () => {
     const now = performance.now();
@@ -30,6 +36,8 @@
     if (clickCount === 3) {
       clickCount = 0;
       react("surprise", 1750);
+    } else {
+      react("react", 960);
     }
   });
 }
