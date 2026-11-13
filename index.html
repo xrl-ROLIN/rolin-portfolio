@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Favorite Designer</title>
-    <link rel="icon" type="image/svg+xml" href="./cat-tab.svg?v=1" />
+    <link rel="icon" type="image/svg+xml" href="./cat-tab.svg?v=2" />
     <meta
       name="description"
       content="A kinetic portfolio across campaign, illustration, brand packaging, 3D and AIGC."
     />
     <link rel="stylesheet" href="./styles.css?v=8" />
     <link rel="stylesheet" href="./global-nav.css?v=2" />
+    <link rel="stylesheet" href="./portfolio-cat.css?v=1">
   </head>
   <body>
     <div class="noise" aria-hidden="true"></div>
@@ -292,5 +293,13 @@
 
     <script src="./assets/vendor/lottie.min.js"></script>
     <script src="./script.js?v=16"></script>
+  <button class="portfolio-cat" type="button" aria-label="Pet the cat">
+    <img class="portfolio-cat__face" src="./cat-face.jpg" alt="" width="1280" height="960">
+    <span class="portfolio-cat__eye portfolio-cat__eye--left"></span>
+    <span class="portfolio-cat__eye portfolio-cat__eye--right"></span>
+    <img class="portfolio-cat__reaction" src="./cat-react.jpg" alt="">
+    <img class="portfolio-cat__surprise" src="./cat-surprise.jpg" alt="">
+  </button>
+  <script src="./portfolio-cat.js?v=1" defer></script>
   </body>
 </html>

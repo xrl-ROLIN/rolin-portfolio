@@ -1,0 +1,12 @@
+.portfolio-cat{position:fixed;right:clamp(14px,3vw,48px);bottom:clamp(16px,4vh,42px);z-index:15;width:clamp(76px,9vw,132px);aspect-ratio:4/3;padding:0;border:0;border-radius:50%;overflow:hidden;background:#ddd;cursor:pointer;box-shadow:0 2px 14px #0003}
+.portfolio-cat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.portfolio-cat__eye{position:absolute;width:5.4%;height:8%;border-radius:50%;background:radial-gradient(circle at 66% 30%,#b0a99a 0 9%,#111 19%,#101711 56%,#3f5140 100%);transform:translate(calc(-50% + var(--look-x,0px)),calc(-50% + var(--look-y,0px)));pointer-events:none}
+.portfolio-cat__eye--left{left:30.2%;top:47.3%}
+.portfolio-cat__eye--right{left:51.3%;top:39%}
+.portfolio-cat .portfolio-cat__reaction{object-fit:cover;object-position:center 46%;transform:scale(2.7);transform-origin:57% 43%}
+.portfolio-cat__reaction,.portfolio-cat__surprise{visibility:hidden}
+.portfolio-cat[data-reaction="react"] .portfolio-cat__reaction,.portfolio-cat[data-reaction="surprise"] .portfolio-cat__surprise{visibility:visible}
+.portfolio-cat[data-reaction="react"]{animation:cat-shake .55s ease-in-out}
+.portfolio-cat[data-reaction="surprise"]{transform:scale(1.55);transform-origin:bottom right}
+@keyframes cat-shake{0%,100%{transform:none}20%,60%{transform:rotate(-9deg) scale(1.18)}40%,80%{transform:rotate(9deg) scale(1.18)}}
+@media(prefers-reduced-motion:reduce){.portfolio-cat[data-reaction="react"]{animation:none}}
