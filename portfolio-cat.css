@@ -21,3 +21,24 @@
   88% { transform: rotate(4deg) scale(1.12); }
 }
 @media(prefers-reduced-motion:reduce){.portfolio-cat[data-reaction="react"]{animation:none}}
+
+.portfolio-cat-caption {
+  position: fixed;
+  right: clamp(14px, 3vw, 48px);
+  bottom: calc(clamp(16px, 4vh, 42px) + clamp(76px, 9vw, 132px) + 24px);
+  z-index: 16;
+  max-width: min(230px, calc(100vw - 32px));
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px 14px 3px 14px;
+  background: #171717;
+  color: white;
+  font: 600 13px/1.35 system-ui, sans-serif;
+  box-shadow: 0 4px 16px #0003;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.portfolio-cat[data-reaction="react"] + .portfolio-cat-caption {
+  visibility: visible;
+}

@@ -21,13 +21,13 @@
     cat.style.setProperty("--look-y", (Math.tanh(y / 105) * 1.8) + "px");
   }, { passive: true });
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) react("react", 960);
+    if (!document.hidden) react("react", 2300);
   });
   document.addEventListener("click", (event) => {
-    if (event.target.closest('a[href="#project"]')) react("react", 960);
+    if (event.target.closest('a[href="#project"]')) react("react", 2300);
   });
   cat.addEventListener("pointerenter", (event) => {
-    if (event.pointerType === "mouse" && !cat.dataset.reaction) react("react", 960);
+    if (event.pointerType === "mouse" && !cat.dataset.reaction) react("react", 2300);
   });
   cat.addEventListener("click", () => {
     const now = performance.now();
@@ -37,7 +37,7 @@
       clickCount = 0;
       react("surprise", 1750);
     } else {
-      react("react", 960);
+      react("react", 2300);
     }
   });
 }
