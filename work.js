@@ -1855,6 +1855,10 @@ function updateAside(index, immediate = false) {
   if (index === activeIndex) return;
   activeIndex = index;
   const section = category.sections[index];
+  if (categoryKey === "campaign") {
+    const projectTitle = `${section.title} / Rolin Portfolio`;
+    if (document.title !== projectTitle) document.title = projectTitle;
+  }
   if (categoryKey === "illustration") {
     updateIllustrationDirectory(section.project || "hay");
   }
