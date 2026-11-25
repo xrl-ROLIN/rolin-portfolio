@@ -1625,6 +1625,44 @@ if (categoryKey === "illustration") {
         `${item.dataset.meta}<br>[${item.dataset.number}]${isActive ? " INFO" : ""}`;
     });
   };
+  let wheelDistance = 0;
+  let lastWheelTime = 0;
+  let lastSelectionTime = 0;
+
+  function stepDirectory(direction) {
+    const current = directoryItems.findIndex((item) => item.classList.contains("is-active"));
+    const next = (current + direction + directoryItems.length) % directoryItems.length;
+    const project = directoryItems[next].dataset.project;
+    stream.querySelector(`[data-index="${projectStarts[project]}"]`)?.scrollIntoView({
+      behavior: "instant",
+      block: "start",
+    });
+    updateIllustrationDirectory(project);
+  }
+
+  workAside.addEventListener("wheel", (event) => {
+    if (event.ctrlKey || !event.deltaY) return;
+    event.preventDefault();
+    const now = performance.now();
+    if (now - lastWheelTime > 180) wheelDistance = 0;
+    lastWheelTime = now;
+    if (now - lastSelectionTime < 300) return;
+    const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+    if (Math.sign(delta) !== Math.sign(wheelDistance)) wheelDistance = 0;
+    wheelDistance += delta;
+    if (Math.abs(wheelDistance) < 45) return;
+    stepDirectory(Math.sign(wheelDistance));
+    wheelDistance = 0;
+    lastSelectionTime = now;
+  }, { passive: false });
+
+  directory.addEventListener("keydown", (event) => {
+    if (!["ArrowDown", "ArrowUp"].includes(event.key)) return;
+    event.preventDefault();
+    stepDirectory(event.key === "ArrowDown" ? 1 : -1);
+    directory.querySelector(".is-active")?.focus({ preventScroll: true });
+  });
+
   updateIllustrationDirectory("hay");
 }
 
